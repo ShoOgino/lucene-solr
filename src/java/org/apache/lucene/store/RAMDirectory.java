@@ -27,7 +27,9 @@ import org.apache.lucene.store.IndexInput;
 import org.apache.lucene.store.IndexOutput;
 
 /**
- * A memory-resident {@link Directory} implementation.
+ * A memory-resident {@link Directory} implementation.  Locking
+ * implementation is by default the {@link SingleInstanceLockFactory}
+ * but can be changed with {@link #setLockFactory}.
  *
  * @version $Id$
  */
@@ -39,6 +41,7 @@ public final class RAMDirectory extends Directory implements Serializable {
 
   /** Constructs an empty {@link Directory}. */
   public RAMDirectory() {
+    setLockFactory(new SingleInstanceLockFactory());
   }
 
   /**
@@ -56,6 +59,7 @@ public final class RAMDirectory extends Directory implements Serializable {
   }
   
   private RAMDirectory(Directory dir, boolean closeDir) throws IOException {
+    this();
     final String[] files = dir.list();
     byte[] buf = new byte[BufferedIndexOutput.BUFFER_SIZE];
     for (int i = 0; i < files.length; i++) {
@@ -173,29 +177,6 @@ public final class RAMDirectory extends Directory implements Serializable {
   public final IndexInput openInput(String name) {
     RAMFile file = (RAMFile)files.get(name);
     return new RAMInputStream(file);
-  }
-
-  /** Construct a {@link Lock}.
-   * @param name the name of the lock file
-   */
-  public final Lock makeLock(final String name) {
-    return new Lock() {
-      public boolean obtain() throws IOException {
-        synchronized (files) {
-          if (!fileExists(name)) {
-            createOutput(name).close();
-            return true;
-          }
-          return false;
-        }
-      }
-      public void release() {
-        deleteFile(name);
-      }
-      public boolean isLocked() {
-        return fileExists(name);
-      }
-    };
   }
 
   /** Closes the store to future operations, releasing associated memory. */
