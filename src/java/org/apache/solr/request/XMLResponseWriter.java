@@ -19,12 +19,19 @@ package org.apache.solr.request;
 import java.io.Writer;
 import java.io.IOException;
 
+import org.apache.solr.util.NamedList;
+
 /**
  * @author yonik
  * @version $Id$
  */
 
 public class XMLResponseWriter implements QueryResponseWriter {
+  public void init(NamedList n) {
+    /* NOOP */
+  }
+
+  
   public void write(Writer writer, SolrQueryRequest req, SolrQueryResponse rsp) throws IOException {
     XMLWriter.writeResponse(writer,req,rsp);
   }
