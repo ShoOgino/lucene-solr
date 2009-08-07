@@ -1,4 +1,4 @@
-package org.apache.lucene.queryParser.spans;
+package org.apache.lucene.queryParser.standard.builders;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -17,35 +17,27 @@ package org.apache.lucene.queryParser.spans;
  * limitations under the License.
  */
 
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.core.QueryNodeException;
-import org.apache.lucene.queryParser.core.builders.QueryTreeBuilder;
-import org.apache.lucene.queryParser.core.nodes.BooleanQueryNode;
 import org.apache.lucene.queryParser.core.nodes.FieldQueryNode;
 import org.apache.lucene.queryParser.core.nodes.QueryNode;
-import org.apache.lucene.queryParser.standard.builders.StandardQueryBuilder;
-import org.apache.lucene.search.spans.SpanQuery;
+import org.apache.lucene.search.TermQuery;
 
 /**
- * Sets up a query tree builder to build a span query tree from a query node
- * tree.<br/>
- * <br/>
- * 
- * The defined map is:<br/>
- * - every BooleanQueryNode instance is delegated to the SpanOrQueryNodeBuilder<br/>
- * - every FieldQueryNode instance is delegated to the SpanTermQueryNodeBuilder <br/>
- * 
+ * Builds a {@link TermQuery} object from a {@link FieldQueryNode} object.
  */
-public class SpansQueryTreeBuilder extends QueryTreeBuilder implements
-    StandardQueryBuilder {
+public class FieldQueryNodeBuilder implements StandardQueryBuilder {
 
-  public SpansQueryTreeBuilder() {
-    setBuilder(BooleanQueryNode.class, new SpanOrQueryNodeBuilder());
-    setBuilder(FieldQueryNode.class, new SpanTermQueryNodeBuilder());
-
+  public FieldQueryNodeBuilder() {
+    // empty constructor
   }
 
-  public SpanQuery build(QueryNode queryTree) throws QueryNodeException {
-    return (SpanQuery) super.build(queryTree);
+  public TermQuery build(QueryNode queryNode) throws QueryNodeException {
+    FieldQueryNode fieldNode = (FieldQueryNode) queryNode;
+
+    return new TermQuery(new Term(fieldNode.getFieldAsString(), fieldNode
+        .getTextAsString()));
+
   }
 
 }

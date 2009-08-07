@@ -1,4 +1,4 @@
-package org.apache.lucene.queryParser.spans;
+package org.apache.lucene.queryParser.standard.nodes;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -17,25 +17,23 @@ package org.apache.lucene.queryParser.spans;
  * limitations under the License.
  */
 
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.core.QueryNodeException;
-import org.apache.lucene.queryParser.core.nodes.FieldQueryNode;
+import org.apache.lucene.queryParser.core.nodes.ModifierQueryNode;
 import org.apache.lucene.queryParser.core.nodes.QueryNode;
-import org.apache.lucene.queryParser.standard.builders.StandardQueryBuilder;
-import org.apache.lucene.search.spans.SpanTermQuery;
+import org.apache.lucene.queryParser.standard.processors.GroupQueryNodeProcessor;
 
 /**
- * This builder creates {@link SpanTermQuery}s from a {@link FieldQueryNode}
- * object.
+ * A {@link BooleanModifierNode} has the same behaviour as
+ * {@link ModifierQueryNode}, it only indicates that this modifier was added by
+ * {@link GroupQueryNodeProcessor} and not by the user. <br/>
+ * 
+ * @see ModifierQueryNode
  */
-public class SpanTermQueryNodeBuilder implements StandardQueryBuilder {
+public class BooleanModifierNode extends ModifierQueryNode {
 
-  public SpanTermQuery build(QueryNode node) throws QueryNodeException {
-    FieldQueryNode fieldQueryNode = (FieldQueryNode) node;
+  private static final long serialVersionUID = -557816496416587068L;
 
-    return new SpanTermQuery(new Term(fieldQueryNode.getFieldAsString(),
-        fieldQueryNode.getTextAsString()));
-
+  public BooleanModifierNode(QueryNode node, Modifier mod) {
+    super(node, mod);
   }
 
 }

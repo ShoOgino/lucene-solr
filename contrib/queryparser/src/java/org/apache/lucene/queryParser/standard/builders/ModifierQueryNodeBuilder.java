@@ -1,4 +1,4 @@
-package org.apache.lucene.queryParser.spans;
+package org.apache.lucene.queryParser.standard.builders;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -19,33 +19,27 @@ package org.apache.lucene.queryParser.spans;
 
 import org.apache.lucene.queryParser.core.QueryNodeException;
 import org.apache.lucene.queryParser.core.builders.QueryTreeBuilder;
-import org.apache.lucene.queryParser.core.nodes.BooleanQueryNode;
-import org.apache.lucene.queryParser.core.nodes.FieldQueryNode;
+import org.apache.lucene.queryParser.core.nodes.ModifierQueryNode;
 import org.apache.lucene.queryParser.core.nodes.QueryNode;
-import org.apache.lucene.queryParser.standard.builders.StandardQueryBuilder;
-import org.apache.lucene.search.spans.SpanQuery;
+import org.apache.lucene.search.Query;
 
 /**
- * Sets up a query tree builder to build a span query tree from a query node
- * tree.<br/>
- * <br/>
- * 
- * The defined map is:<br/>
- * - every BooleanQueryNode instance is delegated to the SpanOrQueryNodeBuilder<br/>
- * - every FieldQueryNode instance is delegated to the SpanTermQueryNodeBuilder <br/>
- * 
+ * Builds no object, it only returns the {@link Query} object set on the
+ * {@link ModifierQueryNode} object using a
+ * {@link QueryTreeBuilder#QUERY_TREE_BUILDER_TAGID} tag.
  */
-public class SpansQueryTreeBuilder extends QueryTreeBuilder implements
-    StandardQueryBuilder {
+public class ModifierQueryNodeBuilder implements StandardQueryBuilder {
 
-  public SpansQueryTreeBuilder() {
-    setBuilder(BooleanQueryNode.class, new SpanOrQueryNodeBuilder());
-    setBuilder(FieldQueryNode.class, new SpanTermQueryNodeBuilder());
-
+  public ModifierQueryNodeBuilder() {
+    // empty constructor
   }
 
-  public SpanQuery build(QueryNode queryTree) throws QueryNodeException {
-    return (SpanQuery) super.build(queryTree);
+  public Query build(QueryNode queryNode) throws QueryNodeException {
+    ModifierQueryNode modifierNode = (ModifierQueryNode) queryNode;
+
+    return (Query) (modifierNode).getChild().getTag(
+        QueryTreeBuilder.QUERY_TREE_BUILDER_TAGID);
+
   }
 
 }

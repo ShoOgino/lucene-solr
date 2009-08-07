@@ -1,4 +1,4 @@
-package org.apache.lucene.queryParser.spans;
+package org.apache.lucene.queryParser.standard.builders;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -19,33 +19,36 @@ package org.apache.lucene.queryParser.spans;
 
 import org.apache.lucene.queryParser.core.QueryNodeException;
 import org.apache.lucene.queryParser.core.builders.QueryTreeBuilder;
-import org.apache.lucene.queryParser.core.nodes.BooleanQueryNode;
-import org.apache.lucene.queryParser.core.nodes.FieldQueryNode;
+import org.apache.lucene.queryParser.core.nodes.BoostQueryNode;
 import org.apache.lucene.queryParser.core.nodes.QueryNode;
-import org.apache.lucene.queryParser.standard.builders.StandardQueryBuilder;
-import org.apache.lucene.search.spans.SpanQuery;
+import org.apache.lucene.search.Query;
 
 /**
- * Sets up a query tree builder to build a span query tree from a query node
- * tree.<br/>
- * <br/>
- * 
- * The defined map is:<br/>
- * - every BooleanQueryNode instance is delegated to the SpanOrQueryNodeBuilder<br/>
- * - every FieldQueryNode instance is delegated to the SpanTermQueryNodeBuilder <br/>
- * 
+ * This builder basically reads the {@link Query} object set on the
+ * {@link BoostQueryNode} child using
+ * {@link QueryTreeBuilder#QUERY_TREE_BUILDER_TAGID} and applies the boost value
+ * defined in the {@link BoostQueryNode}.
  */
-public class SpansQueryTreeBuilder extends QueryTreeBuilder implements
-    StandardQueryBuilder {
+public class BoostQueryNodeBuilder implements StandardQueryBuilder {
 
-  public SpansQueryTreeBuilder() {
-    setBuilder(BooleanQueryNode.class, new SpanOrQueryNodeBuilder());
-    setBuilder(FieldQueryNode.class, new SpanTermQueryNodeBuilder());
-
+  public BoostQueryNodeBuilder() {
+    // empty constructor
   }
 
-  public SpanQuery build(QueryNode queryTree) throws QueryNodeException {
-    return (SpanQuery) super.build(queryTree);
+  public Query build(QueryNode queryNode) throws QueryNodeException {
+    BoostQueryNode boostNode = (BoostQueryNode) queryNode;
+    QueryNode child = boostNode.getChild();
+
+    if (child == null) {
+      return null;
+    }
+
+    Query query = (Query) child
+        .getTag(QueryTreeBuilder.QUERY_TREE_BUILDER_TAGID);
+    query.setBoost(boostNode.getValue());
+
+    return query;
+
   }
 
 }

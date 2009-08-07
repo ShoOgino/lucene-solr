@@ -1,4 +1,4 @@
-package org.apache.lucene.queryParser.spans;
+package org.apache.lucene.queryParser.standard.builders;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -19,22 +19,25 @@ package org.apache.lucene.queryParser.spans;
 
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.core.QueryNodeException;
-import org.apache.lucene.queryParser.core.nodes.FieldQueryNode;
 import org.apache.lucene.queryParser.core.nodes.QueryNode;
-import org.apache.lucene.queryParser.standard.builders.StandardQueryBuilder;
-import org.apache.lucene.search.spans.SpanTermQuery;
+import org.apache.lucene.queryParser.core.nodes.WildcardQueryNode;
+import org.apache.lucene.search.WildcardQuery;
 
 /**
- * This builder creates {@link SpanTermQuery}s from a {@link FieldQueryNode}
+ * Builds a {@link WildcardQuery} object from a {@link WildcardQueryNode}
  * object.
  */
-public class SpanTermQueryNodeBuilder implements StandardQueryBuilder {
+public class WildcardQueryNodeBuilder implements StandardQueryBuilder {
 
-  public SpanTermQuery build(QueryNode node) throws QueryNodeException {
-    FieldQueryNode fieldQueryNode = (FieldQueryNode) node;
+  public WildcardQueryNodeBuilder() {
+    // empty constructor
+  }
 
-    return new SpanTermQuery(new Term(fieldQueryNode.getFieldAsString(),
-        fieldQueryNode.getTextAsString()));
+  public WildcardQuery build(QueryNode queryNode) throws QueryNodeException {
+    WildcardQueryNode wildcardNode = (WildcardQueryNode) queryNode;
+
+    return new WildcardQuery(new Term(wildcardNode.getFieldAsString(),
+        wildcardNode.getTextAsString()));
 
   }
 

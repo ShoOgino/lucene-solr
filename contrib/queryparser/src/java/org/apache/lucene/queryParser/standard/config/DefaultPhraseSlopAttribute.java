@@ -1,4 +1,4 @@
-package org.apache.lucene.queryParser.spans;
+package org.apache.lucene.queryParser.standard.config;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -17,25 +17,18 @@ package org.apache.lucene.queryParser.spans;
  * limitations under the License.
  */
 
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.core.QueryNodeException;
-import org.apache.lucene.queryParser.core.nodes.FieldQueryNode;
-import org.apache.lucene.queryParser.core.nodes.QueryNode;
-import org.apache.lucene.queryParser.standard.builders.StandardQueryBuilder;
-import org.apache.lucene.search.spans.SpanTermQuery;
+import org.apache.lucene.queryParser.core.config.QueryConfigHandler;
+import org.apache.lucene.queryParser.standard.processors.PhraseSlopQueryNodeProcessor;
+import org.apache.lucene.util.Attribute;
 
 /**
- * This builder creates {@link SpanTermQuery}s from a {@link FieldQueryNode}
- * object.
+ * This attribute is used by {@link PhraseSlopQueryNodeProcessor} processor and
+ * must be defined in the {@link QueryConfigHandler}. This attribute tells the
+ * processor what is the default phrase slop when no slop is defined in a
+ * phrase. <br/>
+ * 
  */
-public class SpanTermQueryNodeBuilder implements StandardQueryBuilder {
-
-  public SpanTermQuery build(QueryNode node) throws QueryNodeException {
-    FieldQueryNode fieldQueryNode = (FieldQueryNode) node;
-
-    return new SpanTermQuery(new Term(fieldQueryNode.getFieldAsString(),
-        fieldQueryNode.getTextAsString()));
-
-  }
-
+public interface DefaultPhraseSlopAttribute extends Attribute {
+  public void setDefaultPhraseSlop(int defaultPhraseSlop);
+  public int getDefaultPhraseSlop();
 }
