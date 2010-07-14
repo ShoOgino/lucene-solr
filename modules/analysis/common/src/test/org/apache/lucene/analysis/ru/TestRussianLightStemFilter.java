@@ -17,35 +17,32 @@ package org.apache.lucene.analysis.ru;
  * limitations under the License.
  */
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.Tokenizer;
-import org.apache.lucene.analysis.core.KeywordTokenizer;
-import org.apache.lucene.analysis.util.ReusableAnalyzerBase;
-import org.apache.lucene.util.LuceneTestCase;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
+
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.BaseTokenStreamTestCase;
+import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.core.WhitespaceTokenizer;
+import org.apache.lucene.analysis.util.ReusableAnalyzerBase;
 
 import static org.apache.lucene.analysis.util.VocabularyAssert.*;
 
 /**
- * @deprecated Remove this test class (and its datafiles!) in Lucene 4.0
+ * Simple tests for {@link RussianLightStemFilter}
  */
-@Deprecated
-public class TestRussianStem extends LuceneTestCase {
-  public void testStem() throws IOException {
-    Analyzer a = new ReusableAnalyzerBase() {
-      @Override
-      protected TokenStreamComponents createComponents(String fieldName,
-          Reader reader) {
-        Tokenizer t = new KeywordTokenizer(reader);
-        return new TokenStreamComponents(t, new RussianStemFilter(t));
-      }
-    };
-    InputStream voc = getClass().getResourceAsStream("wordsUTF8.txt");
-    InputStream out = getClass().getResourceAsStream("stemsUTF8.txt");
-    assertVocabulary(a, voc, out);
-    voc.close();
-    out.close();
+public class TestRussianLightStemFilter extends BaseTokenStreamTestCase {
+  private Analyzer analyzer = new ReusableAnalyzerBase() {
+    @Override
+    protected TokenStreamComponents createComponents(String fieldName,
+        Reader reader) {
+      Tokenizer source = new WhitespaceTokenizer(TEST_VERSION_CURRENT, reader);
+      return new TokenStreamComponents(source, new RussianLightStemFilter(source));
+    }
+  };
+  
+  /** Test against a vocabulary from the reference impl */
+  public void testVocabulary() throws IOException {
+    assertVocabulary(analyzer, getDataFile("rulighttestdata.zip"), "rulight.txt");
   }
 }
