@@ -17,66 +17,57 @@
 
 package org.apache.lucene.analysis.standard;
 
+import java.io.IOException;
+import java.io.Reader;
+
 import org.apache.lucene.analysis.Tokenizer;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
 import org.apache.lucene.util.AttributeSource;
 import org.apache.lucene.util.Version;
 
-import java.io.IOException;
-import java.io.Reader;
-
-/** A grammar-based tokenizer constructed with JFlex.
- * <p>
- * As of Lucene version 3.1, this class implements the Word Break rules from the
- * Unicode Text Segmentation algorithm, as specified in 
- * <a href="http://unicode.org/reports/tr29/">Unicode Standard Annex #29</a>.
- * <p/>
- * <b>WARNING</b>: Because JFlex does not support Unicode supplementary 
- * characters (characters above the Basic Multilingual Plane, which contains
- * those up to and including U+FFFF), this scanner will not recognize them
- * properly.  If you need to be able to process text containing supplementary 
- * characters, consider using the ICU4J-backed implementation in contrib/icu  
- * ({@link org.apache.lucene.analysis.icu.segmentation.ICUTokenizer})
- * instead of this class, since the ICU4J-backed implementation does not have
- * this limitation.
+/** A grammar-based tokenizer constructed with JFlex
+ *
+ * <p> This should be a good tokenizer for most European-language documents:
+ *
+ * <ul>
+ *   <li>Splits words at punctuation characters, removing punctuation. However, a 
+ *     dot that's not followed by whitespace is considered part of a token.
+ *   <li>Splits words at hyphens, unless there's a number in the token, in which case
+ *     the whole token is interpreted as a product number and is not split.
+ *   <li>Recognizes email addresses and internet hostnames as one token.
+ * </ul>
+ *
  * <p>Many applications have specific tokenizer needs.  If this tokenizer does
  * not suit your application, please consider copying this source code
  * directory to your project and maintaining your own grammar-based tokenizer.
  *
  * <a name="version"/>
  * <p>You must specify the required {@link Version}
- * compatibility when creating StandardTokenizer:
+ * compatibility when creating ClassicAnalyzer:
  * <ul>
- *   <li> As of 3.1, StandardTokenizer implements Unicode text segmentation.
- *   If you use a previous version number, you get the exact behavior of
- *   {@link ClassicTokenizer} for backwards compatibility.
+ *   <li> As of 2.4, Tokens incorrectly identified as acronyms
+ *        are corrected (see <a href="https://issues.apache.org/jira/browse/LUCENE-1068">LUCENE-1608</a>
  * </ul>
+ * 
+ * ClassicTokenizer was named StandardTokenizer in Lucene versions prior to 3.1.
+ * As of 3.1, {@link StandardTokenizer} implements Unicode text segmentation,
+ * as specified by UAX#29.
  */
 
-public final class StandardTokenizer extends Tokenizer {
+public final class ClassicTokenizer extends Tokenizer {
   /** A private instance of the JFlex-constructed scanner */
   private StandardTokenizerInterface scanner;
 
   public static final int ALPHANUM          = 0;
-  /** @deprecated */
-  @Deprecated
   public static final int APOSTROPHE        = 1;
-  /** @deprecated */
-  @Deprecated
   public static final int ACRONYM           = 2;
-  /** @deprecated */
-  @Deprecated
   public static final int COMPANY           = 3;
   public static final int EMAIL             = 4;
-  /** @deprecated */
-  @Deprecated
   public static final int HOST              = 5;
   public static final int NUM               = 6;
-  /** @deprecated */
-  @Deprecated
   public static final int CJ                = 7;
 
   /**
@@ -85,11 +76,6 @@ public final class StandardTokenizer extends Tokenizer {
    */
   @Deprecated
   public static final int ACRONYM_DEP       = 8;
-
-  public static final int URL = 9;
-  public static final int SOUTHEAST_ASIAN = 10;
-  public static final int IDEOGRAPHIC = 11;
-  public static final int HIRAGANA = 12;
   
   /** String token types that correspond to token type int constants */
   public static final String [] TOKEN_TYPES = new String [] {
@@ -101,11 +87,7 @@ public final class StandardTokenizer extends Tokenizer {
     "<HOST>",
     "<NUM>",
     "<CJ>",
-    "<ACRONYM_DEP>",
-    "<URL>",
-    "<SOUTHEAST_ASIAN>",
-    "<IDEOGRAPHIC>",
-    "<HIRAGANA>"
+    "<ACRONYM_DEP>"
   };
 
   private boolean replaceInvalidAcronym;
@@ -124,37 +106,37 @@ public final class StandardTokenizer extends Tokenizer {
   }
 
   /**
-   * Creates a new instance of the {@link org.apache.lucene.analysis.standard.StandardTokenizer}.  Attaches
+   * Creates a new instance of the {@link ClassicTokenizer}.  Attaches
    * the <code>input</code> to the newly created JFlex scanner.
    *
    * @param input The input reader
    *
    * See http://issues.apache.org/jira/browse/LUCENE-1068
    */
-  public StandardTokenizer(Version matchVersion, Reader input) {
+  public ClassicTokenizer(Version matchVersion, Reader input) {
     super();
     init(input, matchVersion);
   }
 
   /**
-   * Creates a new StandardTokenizer with a given {@link AttributeSource}. 
+   * Creates a new ClassicTokenizer with a given {@link AttributeSource}. 
    */
-  public StandardTokenizer(Version matchVersion, AttributeSource source, Reader input) {
+  public ClassicTokenizer(Version matchVersion, AttributeSource source, Reader input) {
     super(source);
     init(input, matchVersion);
   }
 
   /**
-   * Creates a new StandardTokenizer with a given {@link org.apache.lucene.util.AttributeSource.AttributeFactory} 
+   * Creates a new ClassicTokenizer with a given {@link org.apache.lucene.util.AttributeSource.AttributeFactory} 
    */
-  public StandardTokenizer(Version matchVersion, AttributeFactory factory, Reader input) {
+  public ClassicTokenizer(Version matchVersion, AttributeFactory factory, Reader input) {
     super(factory);
     init(input, matchVersion);
   }
 
   private final void init(Reader input, Version matchVersion) {
-    this.scanner = matchVersion.onOrAfter(Version.LUCENE_31) ?
-      new StandardTokenizerImpl(input) : new ClassicTokenizerImpl(input);
+    this.scanner = new ClassicTokenizerImpl(input);
+
     if (matchVersion.onOrAfter(Version.LUCENE_24)) {
       replaceInvalidAcronym = true;
     } else {
@@ -195,15 +177,15 @@ public final class StandardTokenizer extends Tokenizer {
         // This 'if' should be removed in the next release. For now, it converts
         // invalid acronyms to HOST. When removed, only the 'else' part should
         // remain.
-        if (tokenType == StandardTokenizer.ACRONYM_DEP) {
+        if (tokenType == ClassicTokenizer.ACRONYM_DEP) {
           if (replaceInvalidAcronym) {
-            typeAtt.setType(StandardTokenizer.TOKEN_TYPES[StandardTokenizer.HOST]);
+            typeAtt.setType(ClassicTokenizer.TOKEN_TYPES[ClassicTokenizer.HOST]);
             termAtt.setLength(termAtt.length() - 1); // remove extra '.'
           } else {
-            typeAtt.setType(StandardTokenizer.TOKEN_TYPES[StandardTokenizer.ACRONYM]);
+            typeAtt.setType(ClassicTokenizer.TOKEN_TYPES[ClassicTokenizer.ACRONYM]);
           }
         } else {
-          typeAtt.setType(StandardTokenizer.TOKEN_TYPES[tokenType]);
+          typeAtt.setType(ClassicTokenizer.TOKEN_TYPES[tokenType]);
         }
         return true;
       } else
@@ -227,9 +209,9 @@ public final class StandardTokenizer extends Tokenizer {
   }
 
   /**
-   * Prior to https://issues.apache.org/jira/browse/LUCENE-1068, StandardTokenizer mischaracterized as acronyms tokens like www.abc.com
+   * Prior to https://issues.apache.org/jira/browse/LUCENE-1068, ClassicTokenizer mischaracterized as acronyms tokens like www.abc.com
    * when they should have been labeled as hosts instead.
-   * @return true if StandardTokenizer now returns these tokens as Hosts, otherwise false
+   * @return true if ClassicTokenizer now returns these tokens as Hosts, otherwise false
    *
    * @deprecated Remove in 3.X and make true the only valid value
    */
