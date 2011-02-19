@@ -1,4 +1,4 @@
-package org.apache.lucene.demo.html;
+package org.apache.lucene.benchmark.byTask.feeds.demohtml;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more

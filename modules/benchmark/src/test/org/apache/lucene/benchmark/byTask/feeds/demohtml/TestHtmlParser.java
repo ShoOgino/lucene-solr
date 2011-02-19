@@ -1,4 +1,4 @@
-package org.apache.lucene.demo.html;
+package org.apache.lucene.benchmark.byTask.feeds.demohtml;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -22,7 +22,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Properties;
 
-import org.apache.lucene.demo.html.HTMLParser;
 import org.apache.lucene.util.LuceneTestCase;
 
 public class TestHtmlParser extends LuceneTestCase {
