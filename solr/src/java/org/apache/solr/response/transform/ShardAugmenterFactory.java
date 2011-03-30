@@ -1,5 +1,3 @@
-package org.apache.lucene.queryParser.standard.config;
-
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -16,22 +14,21 @@ package org.apache.lucene.queryParser.standard.config;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.solr.response.transform;
 
-import java.text.Collator;
-
-import org.apache.lucene.queryParser.core.config.QueryConfigHandler;
-import org.apache.lucene.queryParser.standard.processors.ParametricRangeQueryNodeProcessor;
-import org.apache.lucene.search.TermRangeQuery;
-import org.apache.lucene.util.Attribute;
 
 /**
- * This attribute is used by {@link ParametricRangeQueryNodeProcessor} processor
- * and must be defined in the {@link QueryConfigHandler}. This attribute tells
- * the processor which {@link Collator} should be used for a
- * {@link TermRangeQuery} <br/>
- * 
+ * @version $Id$
+ * @since solr 4.0
  */
-public interface RangeCollatorAttribute extends Attribute {
-  public void setDateResolution(Collator rangeCollator);
-  public Collator getRangeCollator();
+public class ShardAugmenterFactory extends TransformerFactory
+{
+  @Override
+  public DocTransformer create(String field, String arg) {
+    String id = "TODO... find ID";
+    // Maybe it is stored in the context?
+    // is it a request variable?
+    return new ValueAugmenter( field, id );
+  }
 }
+
