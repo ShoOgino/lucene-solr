@@ -1,4 +1,4 @@
-package org.apache.lucene.search.grouping;
+package org.apache.solr.core;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -17,16 +17,19 @@ package org.apache.lucene.search.grouping;
  * limitations under the License.
  */
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.util.LuceneTestCase;
+
 /**
- * Represents a group that is found during the first pass search.
- *
- * @lucene.experimental
+ * Opens a directory with {@link LuceneTestCase#newFSDirectory(File)}
  */
-public class SearchGroup<GROUP_VALUE_TYPE> {
+public class MockDirectoryFactory extends DirectoryFactory {
 
-  /** The value that defines this group  */
-  public GROUP_VALUE_TYPE groupValue;
-
-  /** The sort values used during sorting. Can be <code>null</code>. */
-  public Comparable[] sortValues;
+  @Override
+  public Directory open(String path) throws IOException {
+    return LuceneTestCase.newFSDirectory(new File(path));
+  }
 }

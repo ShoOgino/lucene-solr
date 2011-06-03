@@ -1,4 +1,4 @@
-package org.apache.lucene.search.grouping;
+package org.apache.solr.analysis;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -17,16 +17,16 @@ package org.apache.lucene.search.grouping;
  * limitations under the License.
  */
 
+import org.apache.lucene.analysis.TokenFilter;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.en.KStemFilter;
+
 /**
- * Represents a group that is found during the first pass search.
- *
- * @lucene.experimental
+ * Factory for {@link KStemFilter}
  */
-public class SearchGroup<GROUP_VALUE_TYPE> {
+public class KStemFilterFactory extends BaseTokenFilterFactory {
 
-  /** The value that defines this group  */
-  public GROUP_VALUE_TYPE groupValue;
-
-  /** The sort values used during sorting. Can be <code>null</code>. */
-  public Comparable[] sortValues;
+  public TokenFilter create(TokenStream input) {
+    return new KStemFilter(input);
+  }
 }

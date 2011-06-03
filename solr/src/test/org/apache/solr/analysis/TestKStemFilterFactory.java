@@ -1,4 +1,10 @@
-package org.apache.lucene.search.grouping;
+package org.apache.solr.analysis;
+
+import java.io.Reader;
+import java.io.StringReader;
+
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -18,15 +24,13 @@ package org.apache.lucene.search.grouping;
  */
 
 /**
- * Represents a group that is found during the first pass search.
- *
- * @lucene.experimental
+ * Simple tests to ensure the kstem filter factory is working.
  */
-public class SearchGroup<GROUP_VALUE_TYPE> {
-
-  /** The value that defines this group  */
-  public GROUP_VALUE_TYPE groupValue;
-
-  /** The sort values used during sorting. Can be <code>null</code>. */
-  public Comparable[] sortValues;
+public class TestKStemFilterFactory extends BaseTokenTestCase {
+  public void testStemming() throws Exception {
+    Reader reader = new StringReader("bricks");
+    KStemFilterFactory factory = new KStemFilterFactory();
+    TokenStream stream = factory.create(new WhitespaceTokenizer(DEFAULT_VERSION, reader));
+    assertTokenStreamContents(stream, new String[] { "brick" });
+  }
 }
