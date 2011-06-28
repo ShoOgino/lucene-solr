@@ -14,51 +14,61 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.solr.search;
 
-import org.apache.lucene.util.BytesRef;
+import org.apache.lucene.search.Query;
 
-public class MutableValueStr extends MutableValue {
-  public BytesRef value = new BytesRef();
+public class ExtendedQueryBase extends Query implements ExtendedQuery {
+  private int cost;
+  private boolean cache = true;
+  private boolean cacheSep;
 
   @Override
-  public Object toObject() {
-    return exists ? value.utf8ToString() : null;
+  public void setCache(boolean cache) {
+    this.cache = cache;
   }
 
   @Override
-  public void copy(MutableValue source) {
-    MutableValueStr s = (MutableValueStr) source;
-    exists = s.exists;
-    value.copy(s.value);
+  public boolean getCache() {
+    return cache;
   }
 
   @Override
-  public MutableValue duplicate() {
-    MutableValueStr v = new MutableValueStr();
-    v.value.copy(value);
-    v.exists = this.exists;
-    return v;
+  public void setCacheSep(boolean cacheSep) {
+    this.cacheSep = cacheSep;
   }
 
   @Override
-  public boolean equalsSameType(Object other) {
-    MutableValueStr b = (MutableValueStr)other;
-    return value.equals(b.value) && exists == b.exists;
+  public boolean getCacheSep() {
+    return cacheSep;
   }
 
   @Override
-  public int compareSameType(Object other) {
-    MutableValueStr b = (MutableValueStr)other;
-    int c = value.compareTo(b.value);
-    if (c != 0) return c;
-    if (exists == b.exists) return 0;
-    return exists ? 1 : -1;
+  public void setCost(int cost) {
+    this.cost = cost;
   }
 
+  public int getCost() {
+    return cost;
+  }
+
+  public String getOptions() {
+    StringBuilder sb = new StringBuilder();
+    if (!cache) {
+      sb.append("{!cache=false");
+      sb.append(" cost=");
+      sb.append(cost);
+      sb.append("}");
+    } else if (cacheSep) {
+      sb.append("{!cache=sep");
+      sb.append("}");
+    }
+    return sb.toString();
+  }
 
   @Override
-  public int hashCode() {
-    return value.hashCode();
+  public String toString(String field) {
+    return getOptions();
   }
 }

@@ -1,4 +1,6 @@
-/**
+package org.apache.lucene.queries.function;
+
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,13 +17,11 @@
  * limitations under the License.
  */
 
-package org.apache.solr.search.function;
-
+import org.apache.lucene.common.mutable.MutableValue;
+import org.apache.lucene.common.mutable.MutableValueFloat;
 import org.apache.lucene.search.*;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.util.BytesRef;
-import org.apache.solr.search.MutableValue;
-import org.apache.solr.search.MutableValueFloat;
 
 /**
  * Represents field values as different types.
@@ -136,7 +136,7 @@ public abstract class DocValues {
   // A RangeValueSource can't easily be a ValueSource that takes another ValueSource
   // because it needs different behavior depending on the type of fields.  There is also
   // a setup cost - parsing and normalizing params, and doing a binary search on the StringIndex.
-  
+  // TODO: change "reader" to AtomicReaderContext
   public ValueSourceScorer getRangeScorer(IndexReader reader, String lowerVal, String upperVal, boolean includeLower, boolean includeUpper) {
     float lower;
     float upper;

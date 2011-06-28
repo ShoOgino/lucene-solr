@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.solr.search;
+package org.apache.lucene.common.mutable;
 
-public class MutableValueDouble extends MutableValue {
-  public double value;
+public class MutableValueLong extends MutableValue {
+  public long value;
 
   @Override
   public Object toObject() {
@@ -26,14 +26,14 @@ public class MutableValueDouble extends MutableValue {
 
   @Override
   public void copy(MutableValue source) {
-    MutableValueDouble s = (MutableValueDouble) source;
-    value = s.value;
+    MutableValueLong s = (MutableValueLong) source;
     exists = s.exists;
+    value = s.value;
   }
 
   @Override
   public MutableValue duplicate() {
-    MutableValueDouble v = new MutableValueDouble();
+    MutableValueLong v = new MutableValueLong();
     v.value = this.value;
     v.exists = this.exists;
     return v;
@@ -41,23 +41,23 @@ public class MutableValueDouble extends MutableValue {
 
   @Override
   public boolean equalsSameType(Object other) {
-    MutableValueDouble b = (MutableValueDouble)other;
+    MutableValueLong b = (MutableValueLong)other;
     return value == b.value && exists == b.exists;
   }
 
   @Override
   public int compareSameType(Object other) {
-    MutableValueDouble b = (MutableValueDouble)other;
-    int c = Double.compare(value, b.value);
-    if (c != 0) return c;
-    if (!exists) return -1;
-    if (!b.exists) return 1;
-    return 0;
+    MutableValueLong b = (MutableValueLong)other;
+    long bv = b.value;
+    if (value<bv) return -1;
+    if (value>bv) return 1;
+    if (exists == b.exists) return 0;
+    return exists ? 1 : -1;
   }
+
 
   @Override
   public int hashCode() {
-    long x = Double.doubleToLongBits(value);
-    return (int)x + (int)(x>>>32);
+    return (int)value + (int)(value>>32);
   }
 }

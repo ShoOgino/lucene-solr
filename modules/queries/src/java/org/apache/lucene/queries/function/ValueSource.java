@@ -1,4 +1,6 @@
-/**
+package org.apache.lucene.queries.function;
+
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,8 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.apache.solr.search.function;
 
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexReader.AtomicReaderContext;
@@ -33,7 +33,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 /**
- * Instantiates {@link org.apache.solr.search.function.DocValues} for a particular reader.
+ * Instantiates {@link DocValues} for a particular reader.
  * <br>
  * Often used when creating a {@link FunctionQuery}.
  *
@@ -102,7 +102,7 @@ public abstract class ValueSource implements Serializable {
 
   class ValueSourceSortField extends SortField {
     public ValueSourceSortField(boolean reverse) {
-      super(description(), SortField.REWRITEABLE, reverse);
+      super(description(), SortField.Type.REWRITEABLE, reverse);
     }
 
     @Override
@@ -129,7 +129,7 @@ public abstract class ValueSource implements Serializable {
 
   /**
    * Implement a {@link org.apache.lucene.search.FieldComparator} that works
-   * off of the {@link org.apache.solr.search.function.DocValues} for a ValueSource
+   * off of the {@link DocValues} for a ValueSource
    * instead of the normal Lucene FieldComparator that works off of a FieldCache.
    */
   class ValueSourceComparator extends FieldComparator<Double> {
@@ -189,67 +189,6 @@ public abstract class ValueSource implements Serializable {
     public Double value(int slot) {
       return values[slot];
     }
-  }
-}
-
-
-class ValueSourceScorer extends Scorer {
-  protected IndexReader reader;
-  private int doc = -1;
-  protected final int maxDoc;
-  protected final DocValues values;
-  protected boolean checkDeletes;
-  private final Bits delDocs;
-
-  protected ValueSourceScorer(IndexReader reader, DocValues values) {
-    super(null);
-    this.reader = reader;
-    this.maxDoc = reader.maxDoc();
-    this.values = values;
-    setCheckDeletes(true);
-    this.delDocs = MultiFields.getDeletedDocs(reader);
-  }
-
-  public IndexReader getReader() {
-    return reader;
-  }
-
-  public void setCheckDeletes(boolean checkDeletes) {
-    this.checkDeletes = checkDeletes && reader.hasDeletions();
-  }
-
-  public boolean matches(int doc) {
-    return (!checkDeletes || !delDocs.get(doc)) && matchesValue(doc);
-  }
-
-  public boolean matchesValue(int doc) {
-    return true;
-  }
-
-  @Override
-  public int docID() {
-    return doc;
-  }
-
-  @Override
-  public int nextDoc() throws IOException {
-    for (; ;) {
-      doc++;
-      if (doc >= maxDoc) return doc = NO_MORE_DOCS;
-      if (matches(doc)) return doc;
-    }
-  }
-
-  @Override
-  public int advance(int target) throws IOException {
-    // also works fine when target==NO_MORE_DOCS
-    doc = target - 1;
-    return nextDoc();
-  }
-
-  @Override
-  public float score() throws IOException {
-    return values.floatVal(doc);
   }
 }
 
