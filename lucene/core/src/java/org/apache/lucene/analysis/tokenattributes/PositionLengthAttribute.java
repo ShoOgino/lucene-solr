@@ -1,4 +1,4 @@
-package org.apache.lucene.search.spell;
+package org.apache.lucene.analysis.tokenattributes;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -17,12 +17,25 @@ package org.apache.lucene.search.spell;
  * limitations under the License.
  */
 
-import java.util.Iterator;
+import org.apache.lucene.util.Attribute;
 
-/**
- * Marker interface to signal that elements coming from {@link Iterator}
- * come in ascending lexicographic order.
- */
-public interface SortedIterator {
+/** The positionLength determines how many positions this
+ *  token spans.  Very few analyzer components actually
+ *  produce this attribute, and indexing ignores it, but
+ *  it's useful to express the graph structure naturally
+ *  produced by decompounding, word splitting/joining,
+ *  synonym filtering, etc.
+ *
+ * <p>The default value is one. */
 
+public interface PositionLengthAttribute extends Attribute {
+  /** @param positionLength how many positions this token
+   *  spans. */
+  public void setPositionLength(int positionLength);
+
+  /** Returns the position length of this Token.
+   * @see #setPositionLength
+   */
+  public int getPositionLength();
 }
+
