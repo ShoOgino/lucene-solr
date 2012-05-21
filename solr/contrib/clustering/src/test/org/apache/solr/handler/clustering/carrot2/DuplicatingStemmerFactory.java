@@ -1,4 +1,4 @@
-package org.apache.lucene.index;
+package org.apache.solr.handler.clustering.carrot2;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -17,27 +17,18 @@ package org.apache.lucene.index;
  * limitations under the License.
  */
 
-import java.io.IOException;
+import org.carrot2.core.LanguageCode;
+import org.carrot2.text.linguistic.IStemmer;
+import org.carrot2.text.linguistic.IStemmerFactory;
 
-import org.apache.lucene.search.DocIdSetIterator;
-import org.apache.lucene.util.AttributeSource;
-
-/** Iterates through the documents and term freqs.
- *  NOTE: you must first call {@link #nextDoc} before using
- *  any of the per-doc methods. */
-public abstract class DocsEnum extends DocIdSetIterator {
-
-  private AttributeSource atts = null;
-
-  /** Returns term frequency in the current document.  Do
-   *  not call this before {@link #nextDoc} is first called,
-   *  nor after {@link #nextDoc} returns NO_MORE_DOCS. 
-   **/
-  public abstract int freq() throws IOException;
-  
-  /** Returns the related attributes. */
-  public AttributeSource attributes() {
-    if (atts == null) atts = new AttributeSource();
-    return atts;
+public class DuplicatingStemmerFactory implements IStemmerFactory {
+  @Override
+  public IStemmer getStemmer(LanguageCode language) {
+    return new IStemmer() {
+      @Override
+      public CharSequence stem(CharSequence word) {
+        return word.toString() + word.toString();
+      }
+    };
   }
 }
