@@ -1,3 +1,5 @@
+package org.apache.lucene.util.junitcompat;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,36 +17,33 @@
  * limitations under the License.
  */
 
-package org.apache.solr.handler;
+import java.io.File;
 
-import org.apache.solr.common.util.NamedList;
+import org.apache.lucene.util._TestUtil;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
 
-/**
- * use {@link UpdateRequestHandler}
- */
-@Deprecated
-public class CSVRequestHandler extends UpdateRequestHandler {
-
-  @Override
-  public void init(NamedList args) {
-    super.init(args);
-    setAssumeContentType("application/csv");
-    // log.warn("Using deprecated class: "+this.getClass().getSimpleName()+" -- replace with UpdateRequestHandler");
+public class TestLeaveFilesIfTestFails extends WithNestedTests {
+  public TestLeaveFilesIfTestFails() {
+    super(true);
+  }
+  
+  public static class Nested1 extends WithNestedTests.AbstractNestedTest {
+    static File file;
+    public void testDummy() {
+      file = _TestUtil.getTempDir("leftover");
+      file.mkdirs();
+      fail();
+    }
   }
 
-  //////////////////////// SolrInfoMBeans methods //////////////////////
-  @Override
-  public String getDescription() {
-    return "Add/Update multiple documents with CSV formatted rows";
-  }
-
-  @Override
-  public String getSource() {
-    return "$URL$";
+  @Test
+  public void testLeaveFilesIfTestFails() {
+    Result r = JUnitCore.runClasses(Nested1.class);
+    Assert.assertEquals(1, r.getFailureCount());
+    Assert.assertTrue(Nested1.file.exists());
+    Nested1.file.delete();
   }
 }
-
-
-
-
-
