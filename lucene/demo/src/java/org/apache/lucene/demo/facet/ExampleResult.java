@@ -1,6 +1,8 @@
-package org.apache.lucene.facet.example;
+package org.apache.lucene.demo.facet;
 
-import org.apache.lucene.util.Version;
+import java.util.List;
+
+import org.apache.lucene.facet.search.results.FacetResult;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -20,19 +22,28 @@ import org.apache.lucene.util.Version;
  */
 
 /**
+ * Result of running an example program.
+ * This is a general object for allowing to write a test 
+ * that runs an example and verifies its results.
+ * 
  * @lucene.experimental
  */
-public class ExampleUtils {
+public class ExampleResult {
 
-  public static final boolean VERBOSE = Boolean.getBoolean("tests.verbose");
+  private List<FacetResult> facetResults;
 
-  /** The Lucene {@link Version} used by the example code. */
-  public static final Version EXAMPLE_VER = Version.LUCENE_40;
-  
-  public static void log(Object msg) {
-    if (VERBOSE) {
-      System.out.println(msg.toString());
-    }
+  /**
+   * @return the facet results
+   */
+  public List<FacetResult> getFacetResults() {
+    return facetResults;
+  }
+
+  /**
+   * @param facetResults the facet results to set
+   */
+  public void setFacetResults(List<FacetResult> facetResults) {
+    this.facetResults = facetResults;
   }
 
 }

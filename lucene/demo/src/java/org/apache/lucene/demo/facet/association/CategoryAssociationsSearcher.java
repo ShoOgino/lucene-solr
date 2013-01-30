@@ -1,4 +1,4 @@
-package org.apache.lucene.facet.example.association;
+package org.apache.lucene.demo.facet.association;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.store.Directory;
 
-import org.apache.lucene.facet.example.simple.SimpleSearcher;
+import org.apache.lucene.demo.facet.simple.SimpleSearcher;
 import org.apache.lucene.facet.search.params.associations.AssociationFloatSumFacetRequest;
 import org.apache.lucene.facet.search.params.associations.AssociationIntSumFacetRequest;
 import org.apache.lucene.facet.search.results.FacetResult;

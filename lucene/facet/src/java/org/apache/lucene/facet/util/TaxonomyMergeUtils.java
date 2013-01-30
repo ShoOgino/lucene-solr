@@ -1,9 +1,8 @@
-package org.apache.lucene.facet.example.merge;
+package org.apache.lucene.facet.util;
 
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.lucene.facet.example.ExampleUtils;
 import org.apache.lucene.facet.index.OrdinalMappingAtomicReader;
 import org.apache.lucene.facet.index.params.FacetIndexingParams;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter;
@@ -17,6 +16,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.MultiReader;
 import org.apache.lucene.store.Directory;
+import org.apache.lucene.util.Version;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -52,8 +52,7 @@ public class TaxonomyMergeUtils {
    */
   public static void merge(Directory srcIndexDir, Directory srcTaxDir, Directory destIndexDir, Directory destTaxDir, 
       FacetIndexingParams params) throws IOException {
-    IndexWriter destIndexWriter = new IndexWriter(destIndexDir,
-        new IndexWriterConfig(ExampleUtils.EXAMPLE_VER, null));
+    IndexWriter destIndexWriter = new IndexWriter(destIndexDir, new IndexWriterConfig(Version.LUCENE_42, null));
     DirectoryTaxonomyWriter destTaxWriter = new DirectoryTaxonomyWriter(destTaxDir);
     merge(srcIndexDir, srcTaxDir, new MemoryOrdinalMap(), destIndexWriter, destTaxWriter, params);
     destTaxWriter.close();

@@ -1,4 +1,4 @@
-package org.apache.lucene.facet.example.multiCL;
+package org.apache.lucene.demo.facet.multiCL;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.apache.lucene.demo.facet.ExampleUtils;
+import org.apache.lucene.demo.facet.simple.SimpleUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;
-import org.apache.lucene.facet.example.ExampleUtils;
-import org.apache.lucene.facet.example.simple.SimpleUtils;
 import org.apache.lucene.facet.index.FacetFields;
 import org.apache.lucene.facet.index.params.CategoryListParams;
 import org.apache.lucene.facet.index.params.FacetIndexingParams;
@@ -90,12 +90,16 @@ public class MultiCLIndexer {
   
   /**
    * Create an index, and adds to it sample documents and facets.
-   * @param indexDir Directory in which the index should be created.
-   * @param taxoDir Directory in which the taxonomy index should be created.
-   * @throws Exception on error (no detailed exception handling here for sample simplicity
+   * 
+   * @param indexDir
+   *          Directory in which the index should be created.
+   * @param taxoDir
+   *          Directory in which the taxonomy index should be created.
+   * @throws Exception
+   *           on error (no detailed exception handling here for sample
+   *           simplicity
    */
-  public static void index(Directory indexDir, Directory taxoDir)
-      throws Exception {
+  public static void index(Directory indexDir, Directory taxoDir) throws Exception {
 
     Random random = new Random(2003);
 

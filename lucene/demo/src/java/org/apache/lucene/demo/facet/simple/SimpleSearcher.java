@@ -1,9 +1,9 @@
-package org.apache.lucene.facet.example.simple;
+package org.apache.lucene.demo.facet.simple;
 
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.lucene.facet.example.ExampleUtils;
+import org.apache.lucene.demo.facet.ExampleUtils;
 import org.apache.lucene.facet.index.params.FacetIndexingParams;
 import org.apache.lucene.facet.search.DrillDown;
 import org.apache.lucene.facet.search.FacetsCollector;

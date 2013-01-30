@@ -1,12 +1,12 @@
-package org.apache.lucene.facet.example.simple;
+package org.apache.lucene.demo.facet.simple;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.lucene.demo.facet.ExampleUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;
-import org.apache.lucene.facet.example.ExampleUtils;
 import org.apache.lucene.facet.index.FacetFields;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
 import org.apache.lucene.facet.taxonomy.TaxonomyWriter;

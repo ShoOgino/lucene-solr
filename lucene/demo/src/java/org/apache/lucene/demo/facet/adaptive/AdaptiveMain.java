@@ -1,14 +1,14 @@
-package org.apache.lucene.facet.example.adaptive;
+package org.apache.lucene.demo.facet.adaptive;
 
 import java.util.List;
 
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 
-import org.apache.lucene.facet.example.ExampleResult;
-import org.apache.lucene.facet.example.ExampleUtils;
-import org.apache.lucene.facet.example.simple.SimpleIndexer;
-import org.apache.lucene.facet.example.simple.SimpleSearcher;
+import org.apache.lucene.demo.facet.ExampleResult;
+import org.apache.lucene.demo.facet.ExampleUtils;
+import org.apache.lucene.demo.facet.simple.SimpleIndexer;
+import org.apache.lucene.demo.facet.simple.SimpleSearcher;
 import org.apache.lucene.facet.search.AdaptiveFacetsAccumulator;
 import org.apache.lucene.facet.search.results.FacetResult;
 

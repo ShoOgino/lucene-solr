@@ -1,4 +1,4 @@
-package org.apache.lucene.facet.example.association;
+package org.apache.lucene.demo.facet.association;
 
 import org.apache.lucene.facet.associations.CategoryAssociation;
 import org.apache.lucene.facet.associations.CategoryFloatAssociation;

@@ -1,12 +1,12 @@
-package org.apache.lucene.facet.example.association;
+package org.apache.lucene.demo.facet.association;
 
 import java.util.List;
 
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 
-import org.apache.lucene.facet.example.ExampleResult;
-import org.apache.lucene.facet.example.ExampleUtils;
+import org.apache.lucene.demo.facet.ExampleResult;
+import org.apache.lucene.demo.facet.ExampleUtils;
 import org.apache.lucene.facet.search.results.FacetResult;
 
 /*

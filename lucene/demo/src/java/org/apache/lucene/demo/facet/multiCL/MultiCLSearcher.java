@@ -1,4 +1,4 @@
-package org.apache.lucene.facet.example.multiCL;
+package org.apache.lucene.demo.facet.multiCL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +13,8 @@ import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.Directory;
 
 import org.apache.lucene.search.MultiCollector;
-import org.apache.lucene.facet.example.ExampleUtils;
-import org.apache.lucene.facet.example.simple.SimpleUtils;
+import org.apache.lucene.demo.facet.ExampleUtils;
+import org.apache.lucene.demo.facet.simple.SimpleUtils;
 import org.apache.lucene.facet.index.params.FacetIndexingParams;
 import org.apache.lucene.facet.search.FacetsCollector;
 import org.apache.lucene.facet.search.params.CountFacetRequest;

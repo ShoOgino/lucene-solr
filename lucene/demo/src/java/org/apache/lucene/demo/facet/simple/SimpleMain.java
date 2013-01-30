@@ -1,4 +1,4 @@
-package org.apache.lucene.facet.example.simple;
+package org.apache.lucene.demo.facet.simple;
 
 import java.util.List;
 
@@ -7,8 +7,8 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 
-import org.apache.lucene.facet.example.ExampleResult;
-import org.apache.lucene.facet.example.ExampleUtils;
+import org.apache.lucene.demo.facet.ExampleResult;
+import org.apache.lucene.demo.facet.ExampleUtils;
 import org.apache.lucene.facet.search.results.FacetResult;
 import org.apache.lucene.facet.taxonomy.TaxonomyReader;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyReader;

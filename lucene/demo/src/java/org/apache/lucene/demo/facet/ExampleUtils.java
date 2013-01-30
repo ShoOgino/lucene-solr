@@ -1,10 +1,6 @@
-package org.apache.lucene.facet.example;
+package org.apache.lucene.demo.facet;
 
-import org.junit.Test;
-
-import org.apache.lucene.util.LuceneTestCase;
-import org.apache.lucene.facet.example.ExampleResult;
-import org.apache.lucene.facet.example.adaptive.AdaptiveMain;
+import org.apache.lucene.util.Version;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -24,17 +20,19 @@ import org.apache.lucene.facet.example.adaptive.AdaptiveMain;
  */
 
 /**
- * Test that the adaptive example works as expected. This test helps to verify
- * that examples code is alive!
+ * @lucene.experimental
  */
-public class TestAdaptiveExample extends LuceneTestCase {
+public class ExampleUtils {
+
+  public static final boolean VERBOSE = Boolean.getBoolean("tests.verbose");
+
+  /** The Lucene {@link Version} used by the example code. */
+  public static final Version EXAMPLE_VER = Version.LUCENE_40;
   
-  @Test
-  public void testAdaptive () throws Exception {
-    ExampleResult res = new AdaptiveMain().runSample();
-    assertNotNull("Null result!", res);
-    assertNotNull("Null facet result!", res.getFacetResults());
-    assertEquals("Wrong number of results!",1, res.getFacetResults().size());
-    assertEquals("Wrong number of facets!",3, res.getFacetResults().get(0).getNumValidDescendants());
+  public static void log(Object msg) {
+    if (VERBOSE) {
+      System.out.println(msg.toString());
+    }
   }
+
 }
