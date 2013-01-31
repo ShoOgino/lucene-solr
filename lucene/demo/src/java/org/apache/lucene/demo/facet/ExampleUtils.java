@@ -1,8 +1,6 @@
-package org.apache.lucene.facet.example;
+package org.apache.lucene.demo.facet;
 
-import java.util.List;
-
-import org.apache.lucene.facet.search.results.FacetResult;
+import org.apache.lucene.util.Version;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -22,28 +20,32 @@ import org.apache.lucene.facet.search.results.FacetResult;
  */
 
 /**
- * Result of running an example program.
- * This is a general object for allowing to write a test 
- * that runs an example and verifies its results.
- * 
+ * Simple utility functions for the faceting examples
  * @lucene.experimental
  */
-public class ExampleResult {
+public class ExampleUtils {
+  
+  /** No instance */
+  private ExampleUtils() {}
 
-  private List<FacetResult> facetResults;
-
-  /**
-   * @return the facet results
+  /** 
+   * True if the system property <code>tests.verbose</code> has been set.
+   * If true, it causes {@link #log(Object)} to print messages to the console.
    */
-  public List<FacetResult> getFacetResults() {
-    return facetResults;
-  }
+  public static final boolean VERBOSE = Boolean.getBoolean("tests.verbose");
 
+  /** The Lucene {@link Version} used by the example code. */
+  public static final Version EXAMPLE_VER = Version.LUCENE_40;
+  
   /**
-   * @param facetResults the facet results to set
+   * Logs the String representation of <code>msg</code> to the console,
+   * if {@link #VERBOSE} is true. Otherwise, does nothing.
+   * @see #VERBOSE
    */
-  public void setFacetResults(List<FacetResult> facetResults) {
-    this.facetResults = facetResults;
+  public static void log(Object msg) {
+    if (VERBOSE) {
+      System.out.println(msg.toString());
+    }
   }
 
 }

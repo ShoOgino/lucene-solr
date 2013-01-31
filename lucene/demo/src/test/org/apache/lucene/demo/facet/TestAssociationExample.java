@@ -1,10 +1,10 @@
-package org.apache.lucene.facet.example;
+package org.apache.lucene.demo.facet;
 
 import org.junit.Test;
 
 import org.apache.lucene.util.LuceneTestCase;
-import org.apache.lucene.facet.example.ExampleResult;
-import org.apache.lucene.facet.example.association.CategoryAssociationsMain;
+import org.apache.lucene.demo.facet.ExampleResult;
+import org.apache.lucene.demo.facet.association.CategoryAssociationsMain;
 import org.apache.lucene.facet.search.results.FacetResultNode;
 
 /*

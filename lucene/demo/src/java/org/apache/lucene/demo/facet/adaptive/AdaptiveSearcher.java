@@ -1,9 +1,9 @@
-package org.apache.lucene.facet.example.adaptive;
+package org.apache.lucene.demo.facet.adaptive;
 
 import java.util.List;
 
-import org.apache.lucene.facet.example.ExampleUtils;
-import org.apache.lucene.facet.example.simple.SimpleUtils;
+import org.apache.lucene.demo.facet.ExampleUtils;
+import org.apache.lucene.demo.facet.simple.SimpleUtils;
 import org.apache.lucene.facet.search.AdaptiveFacetsAccumulator;
 import org.apache.lucene.facet.search.ScoredDocIdCollector;
 import org.apache.lucene.facet.search.params.CountFacetRequest;
@@ -45,6 +45,9 @@ import org.apache.lucene.store.Directory;
  * @lucene.experimental
  */
 public class AdaptiveSearcher {
+  
+  /** No instance */
+  private AdaptiveSearcher() {}
   
   /**
    * Search with facets through the {@link AdaptiveFacetsAccumulator} 

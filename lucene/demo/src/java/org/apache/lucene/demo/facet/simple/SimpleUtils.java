@@ -1,8 +1,8 @@
-package org.apache.lucene.facet.example.simple;
+package org.apache.lucene.demo.facet.simple;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
-import org.apache.lucene.facet.example.ExampleUtils;
+import org.apache.lucene.demo.facet.ExampleUtils;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
 
 /*
@@ -28,6 +28,9 @@ import org.apache.lucene.facet.taxonomy.CategoryPath;
  * @lucene.experimental
  */
 public class SimpleUtils {
+  
+  /** No instance */
+  private SimpleUtils() {}
 
   /** 
    * Documents text field.

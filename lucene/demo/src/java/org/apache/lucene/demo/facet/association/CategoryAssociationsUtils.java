@@ -1,4 +1,4 @@
-package org.apache.lucene.facet.example.association;
+package org.apache.lucene.demo.facet.association;
 
 import org.apache.lucene.facet.associations.CategoryAssociation;
 import org.apache.lucene.facet.associations.CategoryFloatAssociation;
@@ -23,9 +23,13 @@ import org.apache.lucene.facet.taxonomy.CategoryPath;
  */
 
 /**
+ * Categories for the facet examples
  * @lucene.experimental
  */
 public class CategoryAssociationsUtils {
+  
+  /** No instance */
+  private CategoryAssociationsUtils() {}
 
   /**
    * Categories: categories[D][N] == category-path with association no. N for
@@ -45,6 +49,9 @@ public class CategoryAssociationsUtils {
     }
   };
 
+  /**
+   * Associations (occurrences/confidence levels) for {@link #categories}
+   */
   public static CategoryAssociation[][] associations = {
     // Doc #1 associations
     {

@@ -1,12 +1,15 @@
-package org.apache.lucene.facet.example.multiCL;
+package org.apache.lucene.demo.facet.adaptive;
 
 import java.util.List;
 
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 
-import org.apache.lucene.facet.example.ExampleResult;
-import org.apache.lucene.facet.example.ExampleUtils;
+import org.apache.lucene.demo.facet.ExampleResult;
+import org.apache.lucene.demo.facet.ExampleUtils;
+import org.apache.lucene.demo.facet.simple.SimpleIndexer;
+import org.apache.lucene.demo.facet.simple.SimpleSearcher;
+import org.apache.lucene.facet.search.AdaptiveFacetsAccumulator;
 import org.apache.lucene.facet.search.results.FacetResult;
 
 /*
@@ -27,22 +30,26 @@ import org.apache.lucene.facet.search.results.FacetResult;
  */
 
 /**
+ * Driver for the adaptive sample, using the {@link AdaptiveFacetsAccumulator}.
+ * Indexing is the same as in {@link SimpleSearcher}
+ * 
  * @lucene.experimental
  */
-public class MultiCLMain {
+public class AdaptiveMain {
+  
+  /** Sole constructor */
+  public AdaptiveMain() {}
 
   /**
-   * Driver for the multi sample.
-   * 
-   * @throws Exception
-   *             on error (no detailed exception handling here for sample
-   *             simplicity
+   * Driver for the adaptive sample.
+   * @throws Exception on error (no detailed exception handling here for sample simplicity
    */
   public static void main(String[] args) throws Exception {
-    new MultiCLMain().runSample();
+    new AdaptiveMain().runSample();
     ExampleUtils.log("DONE");
   }
 
+  /** Runs the adaptive sample and returns the facet results */
   public ExampleResult runSample() throws Exception {
 
     // create Directories for the search index and for the taxonomy index
@@ -50,12 +57,11 @@ public class MultiCLMain {
     Directory taxoDir = new RAMDirectory();
 
     // index the sample documents
-    ExampleUtils.log("index the sample documents...");
-    MultiCLIndexer.index(indexDir, taxoDir);
+    ExampleUtils.log("index the adaptive sample documents...");
+    SimpleIndexer.index(indexDir, taxoDir);
 
-    ExampleUtils.log("search the sample documents...");
-    List<FacetResult> facetRes = MultiCLSearcher.searchWithFacets(indexDir,
-        taxoDir, MultiCLIndexer.MULTI_IPARAMS);
+    ExampleUtils.log("search the adaptive sample documents...");
+    List<FacetResult> facetRes = AdaptiveSearcher.searchWithFacets(indexDir, taxoDir);
 
     ExampleResult res = new ExampleResult();
     res.setFacetResults(facetRes);

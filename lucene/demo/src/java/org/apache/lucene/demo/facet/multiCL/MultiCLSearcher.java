@@ -1,4 +1,4 @@
-package org.apache.lucene.facet.example.multiCL;
+package org.apache.lucene.demo.facet.multiCL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +13,8 @@ import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.Directory;
 
 import org.apache.lucene.search.MultiCollector;
-import org.apache.lucene.facet.example.ExampleUtils;
-import org.apache.lucene.facet.example.simple.SimpleUtils;
+import org.apache.lucene.demo.facet.ExampleUtils;
+import org.apache.lucene.demo.facet.simple.SimpleUtils;
 import org.apache.lucene.facet.index.params.FacetIndexingParams;
 import org.apache.lucene.facet.search.FacetsCollector;
 import org.apache.lucene.facet.search.params.CountFacetRequest;
@@ -49,6 +49,9 @@ import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyReader;
  * @lucene.experimental
  */
 public class MultiCLSearcher {
+  
+  /** No instance */
+  private MultiCLSearcher() {}
 
   /**
    * Search an index with facets.
@@ -78,6 +81,18 @@ public class MultiCLSearcher {
     return results;
   }
   
+  /**
+   * Search an index with facets.
+   * 
+   * @param indexReader
+   *            Reader over the search index.
+   * @param taxo
+   *            taxonomy reader.
+   * @throws Exception
+   *             on error (no detailed exception handling here for sample
+   *             simplicity
+   * @return facet results
+   */
   public static List<FacetResult> searchWithFacets(IndexReader indexReader,
       TaxonomyReader taxo, FacetIndexingParams iParams) throws Exception {
     // prepare searcher to search against

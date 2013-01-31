@@ -1,4 +1,4 @@
-package org.apache.lucene.facet.example.multiCL;
+package org.apache.lucene.demo.facet.multiCL;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.apache.lucene.demo.facet.ExampleUtils;
+import org.apache.lucene.demo.facet.simple.SimpleUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;
-import org.apache.lucene.facet.example.ExampleUtils;
-import org.apache.lucene.facet.example.simple.SimpleUtils;
 import org.apache.lucene.facet.index.FacetFields;
 import org.apache.lucene.facet.index.params.CategoryListParams;
 import org.apache.lucene.facet.index.params.FacetIndexingParams;
@@ -48,14 +48,17 @@ import org.apache.lucene.store.RAMDirectory;
  * @lucene.experimental
  */
 public class MultiCLIndexer {
+  
+  /** No instance */
+  private MultiCLIndexer() {}
 
-  // Number of documents to index
+  /** Number of documents to index */
   public static int NUM_DOCS = 100;
-  // Number of facets to add per document
+  /** Number of facets to add per document */
   public static int NUM_FACETS_PER_DOC = 10;
-  // Number of tokens in title
+  /** Number of tokens in title */
   public static int TITLE_LENGTH = 5;
-  // Number of tokens in text
+  /** Number of tokens in text */
   public static int TEXT_LENGTH = 100;
   
   // Lorum ipsum to use as content - this will be tokenized and used for document
@@ -73,7 +76,7 @@ public class MultiCLIndexer {
       + "nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure"
       + "reprehenderit qui in ea voluptate velit esse quam nihil molestiae "
       + "consequatur vel illum qui dolorem eum fugiat quo voluptas nulla pariatur";
-  // PerDimensionIndexingParams for multiple category lists
+  /** PerDimensionIndexingParams for multiple category lists */
   public static final PerDimensionIndexingParams MULTI_IPARAMS;
 
   // Initialize PerDimensionIndexingParams
@@ -90,12 +93,16 @@ public class MultiCLIndexer {
   
   /**
    * Create an index, and adds to it sample documents and facets.
-   * @param indexDir Directory in which the index should be created.
-   * @param taxoDir Directory in which the taxonomy index should be created.
-   * @throws Exception on error (no detailed exception handling here for sample simplicity
+   * 
+   * @param indexDir
+   *          Directory in which the index should be created.
+   * @param taxoDir
+   *          Directory in which the taxonomy index should be created.
+   * @throws Exception
+   *           on error (no detailed exception handling here for sample
+   *           simplicity
    */
-  public static void index(Directory indexDir, Directory taxoDir)
-      throws Exception {
+  public static void index(Directory indexDir, Directory taxoDir) throws Exception {
 
     Random random = new Random(2003);
 
@@ -195,6 +202,7 @@ public class MultiCLIndexer {
         + nFacetsAdded + " facets.");
   }
 
+  /** Driver for the example */
   public static void main(String[] args) throws Exception {
     index(new RAMDirectory(), new RAMDirectory());
   }

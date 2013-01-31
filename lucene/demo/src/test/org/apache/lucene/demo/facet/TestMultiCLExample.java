@@ -1,4 +1,4 @@
-package org.apache.lucene.facet.example;
+package org.apache.lucene.demo.facet;
 
 import java.util.Iterator;
 import java.util.List;
@@ -6,7 +6,8 @@ import java.util.List;
 import org.junit.Test;
 
 import org.apache.lucene.util.LuceneTestCase;
-import org.apache.lucene.facet.example.multiCL.MultiCLMain;
+import org.apache.lucene.demo.facet.ExampleResult;
+import org.apache.lucene.demo.facet.multiCL.MultiCLMain;
 import org.apache.lucene.facet.search.results.FacetResult;
 import org.apache.lucene.facet.search.results.FacetResultNode;
 
@@ -45,7 +46,6 @@ public class TestMultiCLExample extends LuceneTestCase {
     assertNotNull("Result should not be null", result);
     FacetResultNode node = result.getFacetResultNode();
     assertEquals("Invalid label", "5", node.label.toString());
-    assertEquals("Invalid value", 2.0, node.value, 0.0);
     assertEquals("Invalid # of subresults", 3, node.subResults.size());
 
     Iterator<? extends FacetResultNode> subResults = node.subResults.iterator();

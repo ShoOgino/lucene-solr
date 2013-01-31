@@ -1,13 +1,13 @@
-package org.apache.lucene.facet.example.association;
+package org.apache.lucene.demo.facet.association;
 
+import org.apache.lucene.demo.facet.ExampleUtils;
+import org.apache.lucene.demo.facet.simple.SimpleUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.facet.associations.AssociationsFacetFields;
 import org.apache.lucene.facet.associations.CategoryAssociation;
 import org.apache.lucene.facet.associations.CategoryAssociationsContainer;
-import org.apache.lucene.facet.example.ExampleUtils;
-import org.apache.lucene.facet.example.simple.SimpleUtils;
 import org.apache.lucene.facet.taxonomy.CategoryPath;
 import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter;
@@ -40,6 +40,9 @@ import org.apache.lucene.store.Directory;
  * @lucene.experimental
  */
 public class CategoryAssociationsIndexer {
+  
+  /** No instance. */
+  private CategoryAssociationsIndexer() {}
 
   /**
    * Create an index, and adds to it sample documents and categories.
