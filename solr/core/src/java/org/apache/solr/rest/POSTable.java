@@ -1,4 +1,4 @@
-package org.apache.solr.core;
+package org.apache.solr.rest;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -17,20 +17,11 @@ package org.apache.solr.core;
  * limitations under the License.
  */
 
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.solr.SolrTestCaseJ4;
-import org.junit.BeforeClass;
+import org.restlet.representation.Representation;
+import org.restlet.resource.Post;
 
-public class TestSolrIndexConfig extends SolrTestCaseJ4 {
-
-  @BeforeClass
-  public static void beforeClass() throws Exception {
-    initCore("solrconfig-indexconfig.xml","schema.xml");
-  }
-  
-  public void testIndexConfig() throws Exception {
-    IndexWriterConfig iwc = solrConfig.indexConfig.toIndexWriterConfig(h.getCore().getLatestSchema());
-
-    assertEquals(123, iwc.getMaxThreadStates());
-  }
+/** Marker interface for resource classes that handle POST requests. */
+public interface POSTable {
+  @Post
+  public Representation post(Representation representation);
 }
