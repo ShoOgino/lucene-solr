@@ -1,4 +1,4 @@
-package org.apache.lucene.codecs.compressing;
+package org.apache.solr.store.hdfs;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -19,38 +19,49 @@ package org.apache.lucene.codecs.compressing;
 
 import java.io.IOException;
 
-import org.apache.lucene.store.DataOutput;
-import org.apache.lucene.util.ArrayUtil;
+import org.apache.lucene.store.IndexOutput;
 
-/**
- * A {@link DataOutput} that can be used to build a byte[].
- */
-final class GrowableByteArrayDataOutput extends DataOutput {
-
-  byte[] bytes;
-  int length;
-
-  GrowableByteArrayDataOutput(int cp) {
-    this.bytes = new byte[ArrayUtil.oversize(cp, 1)];
-    this.length = 0;
+public class NullIndexOutput extends IndexOutput {
+  
+  private long pos;
+  private long length;
+  
+  @Override
+  public void close() throws IOException {
+    
   }
-
+  
+  @Override
+  public void flush() throws IOException {
+    
+  }
+  
+  @Override
+  public long getFilePointer() {
+    return pos;
+  }
+  
+  @Override
+  public long length() throws IOException {
+    return length;
+  }
+  
   @Override
   public void writeByte(byte b) throws IOException {
-    if (length >= bytes.length) {
-      bytes = ArrayUtil.grow(bytes);
-    }
-    bytes[length++] = b;
+    pos++;
+    updateLength();
   }
-
+  
   @Override
-  public void writeBytes(byte[] b, int off, int len) throws IOException {
-    final int newLength = length + len;
-    if (newLength > bytes.length) {
-      bytes = ArrayUtil.grow(bytes, newLength);
-    }
-    System.arraycopy(b, off, bytes, length, len);
-    length = newLength;
+  public void writeBytes(byte[] b, int offset, int length) throws IOException {
+    pos += length;
+    updateLength();
   }
-
+  
+  private void updateLength() {
+    if (pos > length) {
+      length = pos;
+    }
+  }
+  
 }
