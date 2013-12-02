@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,28 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.solr.handler.extraction;
+package org.apache.solr.hadoop.dedup;
 
-import org.apache.tika.metadata.Metadata;
-import org.apache.solr.common.params.SolrParams;
-import org.apache.solr.schema.IndexSchema;
+import java.util.Iterator;
 
-import java.util.Collection;
-
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer.Context;
+import org.apache.solr.common.SolrInputDocument;
 
 /**
- *
- *
- **/
-public class SolrContentHandlerFactory {
-  protected Collection<String> dateFormats;
+ * UpdateConflictResolver implementation that returns the solr documents in the
+ * same order as they are received on input, i.e. without change in order.
+ */
+public final class NoChangeUpdateConflictResolver implements UpdateConflictResolver {
 
-  public SolrContentHandlerFactory(Collection<String> dateFormats) {
-    this.dateFormats = dateFormats;
+  @Override
+  public Iterator<SolrInputDocument> orderUpdates(Text key, Iterator<SolrInputDocument> updates, Context ctx) {    
+    return updates;
   }
 
-  public SolrContentHandler createSolrContentHandler(Metadata metadata, SolrParams params, IndexSchema schema) {
-    return new SolrContentHandler(metadata, params, schema,
-            dateFormats);
-  }
 }

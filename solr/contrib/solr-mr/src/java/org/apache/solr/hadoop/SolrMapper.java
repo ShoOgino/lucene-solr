@@ -14,28 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.solr.handler.extraction;
+package org.apache.solr.hadoop;
 
-import org.apache.tika.metadata.Metadata;
-import org.apache.solr.common.params.SolrParams;
-import org.apache.solr.schema.IndexSchema;
+import java.io.IOException;
 
-import java.util.Collection;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
 
+public class SolrMapper<KEYIN, VALUEIN> extends Mapper<KEYIN, VALUEIN, Text, SolrInputDocumentWritable> {
+  
+  private Path solrHomeDir;
 
-/**
- *
- *
- **/
-public class SolrContentHandlerFactory {
-  protected Collection<String> dateFormats;
-
-  public SolrContentHandlerFactory(Collection<String> dateFormats) {
-    this.dateFormats = dateFormats;
+  @Override
+  protected void setup(Context context) throws IOException, InterruptedException {
+    Utils.getLogConfigFile(context.getConfiguration());
+    super.setup(context);
+    solrHomeDir = SolrRecordWriter.findSolrConfig(context.getConfiguration());
   }
-
-  public SolrContentHandler createSolrContentHandler(Metadata metadata, SolrParams params, IndexSchema schema) {
-    return new SolrContentHandler(metadata, params, schema,
-            dateFormats);
+  
+  protected Path getSolrHomeDir() {
+    return solrHomeDir;
   }
 }

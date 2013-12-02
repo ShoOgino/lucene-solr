@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,28 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.solr.handler.extraction;
+package org.apache.solr.hadoop;
 
-import org.apache.tika.metadata.Metadata;
-import org.apache.solr.common.params.SolrParams;
-import org.apache.solr.schema.IndexSchema;
+import java.io.IOException;
 
-import java.util.Collection;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+public class IdentityMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
 
-/**
- *
- *
- **/
-public class SolrContentHandlerFactory {
-  protected Collection<String> dateFormats;
+  private static final Logger LOGGER = LoggerFactory.getLogger(IdentityMapper.class);
 
-  public SolrContentHandlerFactory(Collection<String> dateFormats) {
-    this.dateFormats = dateFormats;
-  }
-
-  public SolrContentHandler createSolrContentHandler(Metadata metadata, SolrParams params, IndexSchema schema) {
-    return new SolrContentHandler(metadata, params, schema,
-            dateFormats);
+  @Override
+  protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+    LOGGER.info("map key: {}, value: {}", key, value);
+    context.write(value, NullWritable.get());
   }
 }

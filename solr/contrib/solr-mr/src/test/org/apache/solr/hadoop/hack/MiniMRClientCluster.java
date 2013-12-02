@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,28 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.solr.handler.extraction;
+package org.apache.solr.hadoop.hack;
 
-import org.apache.tika.metadata.Metadata;
-import org.apache.solr.common.params.SolrParams;
-import org.apache.solr.schema.IndexSchema;
+import java.io.IOException;
 
-import java.util.Collection;
+import org.apache.hadoop.conf.Configuration;
 
+/*
+ * A simple interface for a client MR cluster used for testing. This interface
+ * provides basic methods which are independent of the underlying Mini Cluster (
+ * either through MR1 or MR2).
+ */
+public interface MiniMRClientCluster {
 
-/**
- *
- *
- **/
-public class SolrContentHandlerFactory {
-  protected Collection<String> dateFormats;
+  public void start() throws IOException;
 
-  public SolrContentHandlerFactory(Collection<String> dateFormats) {
-    this.dateFormats = dateFormats;
-  }
+  /**
+   * Stop and start back the cluster using the same configuration.
+   */
+  public void restart() throws IOException;
 
-  public SolrContentHandler createSolrContentHandler(Metadata metadata, SolrParams params, IndexSchema schema) {
-    return new SolrContentHandler(metadata, params, schema,
-            dateFormats);
-  }
+  public void stop() throws IOException;
+
+  public Configuration getConfig() throws IOException;
+
 }

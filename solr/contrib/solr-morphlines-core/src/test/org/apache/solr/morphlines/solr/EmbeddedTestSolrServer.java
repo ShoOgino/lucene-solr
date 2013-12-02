@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,28 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.solr.handler.extraction;
+package org.apache.solr.morphlines.solr;
 
-import org.apache.tika.metadata.Metadata;
-import org.apache.solr.common.params.SolrParams;
-import org.apache.solr.schema.IndexSchema;
+import java.io.IOException;
 
-import java.util.Collection;
-
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
+import org.apache.solr.client.solrj.response.UpdateResponse;
+import org.apache.solr.core.CoreContainer;
 
 /**
- *
- *
- **/
-public class SolrContentHandlerFactory {
-  protected Collection<String> dateFormats;
+ * An EmbeddedSolrServer that supresses shutdown and rollback requests as
+ * necessary for testing
+ */
+public class EmbeddedTestSolrServer extends EmbeddedSolrServer {
 
-  public SolrContentHandlerFactory(Collection<String> dateFormats) {
-    this.dateFormats = dateFormats;
+  public EmbeddedTestSolrServer(CoreContainer coreContainer, String coreName) {
+    super(coreContainer, coreName);
   }
 
-  public SolrContentHandler createSolrContentHandler(Metadata metadata, SolrParams params, IndexSchema schema) {
-    return new SolrContentHandler(metadata, params, schema,
-            dateFormats);
+  @Override
+  public void shutdown() {
+    ; // NOP
   }
+
+  @Override
+  public UpdateResponse rollback() throws SolrServerException, IOException {
+    return new UpdateResponse();
+  }
+
 }
