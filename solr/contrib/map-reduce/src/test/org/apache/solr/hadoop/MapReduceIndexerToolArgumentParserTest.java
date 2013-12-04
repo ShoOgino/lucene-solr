@@ -49,7 +49,7 @@ public class MapReduceIndexerToolArgumentParserTest extends LuceneTestCase {
   private ByteArrayOutputStream bout;
   private ByteArrayOutputStream berr;
   
-  private static final String RESOURCES_DIR = ExternalPaths.SOURCE_HOME + "/contrib/solr-mr/src/test-files";  
+  private static final String RESOURCES_DIR = ExternalPaths.SOURCE_HOME + "/contrib/map-reduce/src/test-files";  
   private static final File MINIMR_INSTANCE_DIR = new File(RESOURCES_DIR + "/solr/minimr");
 
   private static final String MORPHLINE_FILE = RESOURCES_DIR + "/test-morphlines/solrCellDocumentTypes.conf";

@@ -33,7 +33,7 @@ import org.apache.solr.util.ExternalPaths;
 
 
 public class UtilsForTests {
-  protected static final String RESOURCES_DIR = ExternalPaths.SOURCE_HOME + "/contrib/solr-mr/src/test-files";  
+  protected static final String RESOURCES_DIR = ExternalPaths.SOURCE_HOME + "/contrib/map-reduce/src/test-files";  
   
   public static void validateSolrServerDocumentCount(File solrHomeDir, FileSystem fs, Path outDir, int expectedDocs, int expectedShards)
       throws IOException, SolrServerException {

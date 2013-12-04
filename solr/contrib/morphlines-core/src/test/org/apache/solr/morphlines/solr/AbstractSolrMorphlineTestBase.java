@@ -68,7 +68,7 @@ public class AbstractSolrMorphlineTestBase extends SolrTestCaseJ4 {
   protected static final String EXTERNAL_SOLR_SERVER_URL = System.getProperty("externalSolrServer");
 //  protected static final String EXTERNAL_SOLR_SERVER_URL = "http://127.0.0.1:8983/solr";
 
-  protected static final String RESOURCES_DIR = ExternalPaths.SOURCE_HOME + "/contrib/solr-mr/src/test-files"; 
+  protected static final String RESOURCES_DIR = ExternalPaths.SOURCE_HOME + "/contrib/map-reduce/src/test-files"; 
   protected static final String DEFAULT_BASE_DIR = "solr";
   protected static final AtomicInteger SEQ_NUM = new AtomicInteger();
   protected static final AtomicInteger SEQ_NUM2 = new AtomicInteger();

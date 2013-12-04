@@ -49,7 +49,7 @@ import com.typesafe.config.Config;
 public abstract class AbstractSolrMorphlineZkTestBase extends AbstractFullDistribZkTestBase {
   private static final File solrHomeDirectory = new File(TEMP_DIR, AbstractSolrMorphlineZkTestBase.class.getName());
   
-  protected static final String RESOURCES_DIR = ExternalPaths.SOURCE_HOME + "/contrib/solr-mr/src/test-files";  
+  protected static final String RESOURCES_DIR = ExternalPaths.SOURCE_HOME + "/contrib/map-reduce/src/test-files";  
   private static final File SOLR_INSTANCE_DIR = new File(RESOURCES_DIR + "/solr");
   private static final File SOLR_CONF_DIR = new File(RESOURCES_DIR + "/solr/collection1");
 

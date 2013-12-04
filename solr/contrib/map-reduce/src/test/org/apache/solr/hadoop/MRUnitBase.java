@@ -29,7 +29,7 @@ import org.junit.BeforeClass;
 
 public abstract class MRUnitBase extends SolrTestCaseJ4 {
   
-  protected static final String RESOURCES_DIR = ExternalPaths.SOURCE_HOME + "/contrib/solr-mr/src/test-files";  
+  protected static final String RESOURCES_DIR = ExternalPaths.SOURCE_HOME + "/contrib/map-reduce/src/test-files";  
   protected static final String DOCUMENTS_DIR = RESOURCES_DIR + "/test-documents";
   protected static File solrHomeZip;
 
