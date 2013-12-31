@@ -1,4 +1,4 @@
-package org.apache.lucene.facet;
+package org.apache.lucene.facet.taxonomy;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -20,28 +20,29 @@ package org.apache.lucene.facet;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.lucene.facet.FacetsCollector;
+import org.apache.lucene.facet.FacetsConfig;
 import org.apache.lucene.facet.FacetsCollector.MatchingDocs;
-import org.apache.lucene.facet.taxonomy.TaxonomyReader;
 import org.apache.lucene.index.BinaryDocValues;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.FixedBitSet;
 
 /** Aggregates sum of int values previously indexed with
- *  {@link FloatAssociationFacetField}, assuming the default
+ *  {@link IntAssociationFacetField}, assuming the default
  *  encoding.
  *
  *  @lucene.experimental */
-public class TaxonomyFacetSumFloatAssociations extends FloatTaxonomyFacets {
+public class TaxonomyFacetSumIntAssociations extends IntTaxonomyFacets {
 
-  /** Create {@code TaxonomyFacetSumFloatAssociations} against
+  /** Create {@code TaxonomyFacetSumIntAssociations} against
    *  the default index field. */
-  public TaxonomyFacetSumFloatAssociations(TaxonomyReader taxoReader, FacetsConfig config, FacetsCollector fc) throws IOException {
+  public TaxonomyFacetSumIntAssociations(TaxonomyReader taxoReader, FacetsConfig config, FacetsCollector fc) throws IOException {
     this(FacetsConfig.DEFAULT_INDEX_FIELD_NAME, taxoReader, config, fc);
   }
 
-  /** Create {@code TaxonomyFacetSumFloatAssociations} against
+  /** Create {@code TaxonomyFacetSumIntAssociations} against
    *  the specified index field. */
-  public TaxonomyFacetSumFloatAssociations(String indexFieldName, TaxonomyReader taxoReader, FacetsConfig config, FacetsCollector fc) throws IOException {
+  public TaxonomyFacetSumIntAssociations(String indexFieldName, TaxonomyReader taxoReader, FacetsConfig config, FacetsCollector fc) throws IOException {
     super(indexFieldName, taxoReader, config);
     sumValues(fc.getMatchingDocs());
   }
@@ -78,7 +79,7 @@ public class TaxonomyFacetSumFloatAssociations extends FloatTaxonomyFacets {
             ((bytes[offset+2]&0xFF) << 8) |
             (bytes[offset+3]&0xFF);
           offset += 4;
-          values[ord] += Float.intBitsToFloat(value);
+          values[ord] += value;
         }
         ++doc;
       }

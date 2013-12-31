@@ -1,4 +1,4 @@
-package org.apache.lucene.facet;
+package org.apache.lucene.facet.range;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -28,42 +28,44 @@ import org.apache.lucene.search.DocIdSetIterator;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.NumericRangeFilter;
 import org.apache.lucene.util.Bits;
+import org.apache.lucene.util.NumericUtils;
 
-/** Represents a range over long values. */
-public final class LongRange extends Range {
-  final long minIncl;
-  final long maxIncl;
+/** Represents a range over double values. */
+public final class DoubleRange extends Range {
+  final double minIncl;
+  final double maxIncl;
 
-  public final long min;
-  public final long max;
+  public final double min;
+  public final double max;
   public final boolean minInclusive;
   public final boolean maxInclusive;
 
-  // TODO: can we require fewer args? (same for
-  // Double/FloatRange too)
-
-  /** Create a LongRange. */
-  public LongRange(String label, long minIn, boolean minInclusive, long maxIn, boolean maxInclusive) {
+  /** Create a DoubleRange. */
+  public DoubleRange(String label, double minIn, boolean minInclusive, double maxIn, boolean maxInclusive) {
     super(label);
     this.min = minIn;
     this.max = maxIn;
     this.minInclusive = minInclusive;
     this.maxInclusive = maxInclusive;
 
+    // TODO: if DoubleDocValuesField used
+    // NumericUtils.doubleToSortableLong format (instead of
+    // Double.doubleToRawLongBits) we could do comparisons
+    // in long space 
+
+    if (Double.isNaN(min)) {
+      throw new IllegalArgumentException("min cannot be NaN");
+    }
     if (!minInclusive) {
-      if (minIn != Long.MAX_VALUE) {
-        minIn++;
-      } else {
-        failNoMatch();
-      }
+      minIn = Math.nextUp(minIn);
     }
 
+    if (Double.isNaN(max)) {
+      throw new IllegalArgumentException("max cannot be NaN");
+    }
     if (!maxInclusive) {
-      if (maxIn != Long.MIN_VALUE) {
-        maxIn--;
-      } else {
-        failNoMatch();
-      }
+      // Why no Math.nextDown?
+      maxIn = Math.nextAfter(maxIn, Double.NEGATIVE_INFINITY);
     }
 
     if (minIn > maxIn) {
@@ -74,13 +76,19 @@ public final class LongRange extends Range {
     this.maxIncl = maxIn;
   }
 
-  public boolean accept(long value) {
+  public boolean accept(double value) {
     return value >= minIncl && value <= maxIncl;
+  }
+
+  LongRange toLongRange() {
+    return new LongRange(label,
+                         NumericUtils.doubleToSortableLong(minIncl), true,
+                         NumericUtils.doubleToSortableLong(maxIncl), true);
   }
 
   @Override
   public String toString() {
-    return "LongRange(" + minIncl + " to " + maxIncl + ")";
+    return "DoubleRange(" + minIncl + " to " + maxIncl + ")";
   }
 
   /** Returns a new {@link Filter} accepting only documents
@@ -120,7 +128,7 @@ public final class LongRange extends Range {
                   if (acceptDocs != null && acceptDocs.get(doc) == false) {
                     continue;
                   }
-                  long v = values.longVal(doc);
+                  double v = values.doubleVal(doc);
                   if (accept(v)) {
                     return doc;
                   }
@@ -151,3 +159,4 @@ public final class LongRange extends Range {
     };
   }
 }
+

@@ -1,4 +1,4 @@
-package org.apache.lucene.facet;
+package org.apache.lucene.facet.taxonomy;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -23,11 +23,26 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.lucene.facet.taxonomy.ParallelTaxonomyArrays;
-import org.apache.lucene.facet.taxonomy.TaxonomyReader;
+import org.apache.lucene.facet.FacetResult;
+import org.apache.lucene.facet.Facets;
+import org.apache.lucene.facet.FacetsConfig;
 
 /** Base class for all taxonomy-based facets impls. */
 public abstract class TaxonomyFacets extends Facets {
+
+  private static final Comparator<FacetResult> BY_VALUE_THEN_DIM = new Comparator<FacetResult>() {
+    @Override
+    public int compare(FacetResult a, FacetResult b) {
+      if (a.value.doubleValue() > b.value.doubleValue()) {
+        return -1;
+      } else if (b.value.doubleValue() > a.value.doubleValue()) {
+        return 1;
+      } else {
+        return a.dim.compareTo(b.dim);
+      }
+    }
+  };
+
   protected final String indexFieldName;
   protected final TaxonomyReader taxoReader;
   protected final FacetsConfig config;
@@ -67,20 +82,9 @@ public abstract class TaxonomyFacets extends Facets {
       ord = siblings[ord];
     }
 
-    // Sort by highest value, tie break by value:
-    Collections.sort(results,
-                     new Comparator<FacetResult>() {
-                       @Override
-                       public int compare(FacetResult a, FacetResult b) {
-                         if (a.value.doubleValue() > b.value.doubleValue()) {
-                           return -1;
-                         } else if (b.value.doubleValue() > a.value.doubleValue()) {
-                           return 1;
-                         } else {
-                           return a.dim.compareTo(b.dim);
-                         }
-                       }
-                     });
+    // Sort by highest value, tie break by dim:
+    Collections.sort(results, BY_VALUE_THEN_DIM);
     return results;
   }
+  
 }

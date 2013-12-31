@@ -1,4 +1,4 @@
-package org.apache.lucene.facet;
+package org.apache.lucene.facet.taxonomy;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -26,7 +26,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.lucene.analysis.MockAnalyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.facet.SearcherTaxonomyManager.SearcherAndTaxonomy;
+import org.apache.lucene.facet.FacetField;
+import org.apache.lucene.facet.FacetResult;
+import org.apache.lucene.facet.FacetTestCase;
+import org.apache.lucene.facet.Facets;
+import org.apache.lucene.facet.FacetsCollector;
+import org.apache.lucene.facet.FacetsConfig;
+import org.apache.lucene.facet.taxonomy.SearcherTaxonomyManager;
+import org.apache.lucene.facet.taxonomy.SearcherTaxonomyManager.SearcherAndTaxonomy;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.search.MatchAllDocsQuery;
@@ -125,8 +132,6 @@ public class TestSearcherTaxonomyManager extends FacetTestCase {
         SearcherAndTaxonomy pair = mgr.acquire();
         try {
           //System.out.println("search maxOrd=" + pair.taxonomyReader.getSize());
-          int topN = _TestUtil.nextInt(random(), 1, 20);
-          
           FacetsCollector sfc = new FacetsCollector();
           pair.searcher.search(new MatchAllDocsQuery(), sfc);
           Facets facets = getTaxonomyFacetCounts(pair.taxonomyReader, config, sfc);

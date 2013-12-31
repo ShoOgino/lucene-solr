@@ -1,4 +1,4 @@
-package org.apache.lucene.facet;
+package org.apache.lucene.facet.range;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -21,8 +21,10 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.lucene.facet.FacetResult;
+import org.apache.lucene.facet.Facets;
+import org.apache.lucene.facet.LabelAndValue;
 import org.apache.lucene.queries.function.valuesource.LongFieldSource;
-
 
 /** Base class for range faceting.
  *

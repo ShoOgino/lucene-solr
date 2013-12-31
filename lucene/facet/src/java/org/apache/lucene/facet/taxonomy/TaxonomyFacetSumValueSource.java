@@ -1,4 +1,4 @@
-package org.apache.lucene.facet;
+package org.apache.lucene.facet.taxonomy;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -22,8 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.lucene.facet.DocValuesOrdinalsReader;
+import org.apache.lucene.facet.FacetsCollector;
 import org.apache.lucene.facet.FacetsCollector.MatchingDocs;
-import org.apache.lucene.facet.taxonomy.TaxonomyReader;
+import org.apache.lucene.facet.FacetsConfig;
+import org.apache.lucene.facet.OrdinalsReader;
 import org.apache.lucene.index.AtomicReaderContext;
 import org.apache.lucene.queries.function.FunctionValues;
 import org.apache.lucene.queries.function.ValueSource;
@@ -126,9 +129,10 @@ public class TaxonomyFacetSumValueSource extends FloatTaxonomyFacets {
         }
       };
     }
-
+    
     @Override public boolean equals(Object o) { return o == this; }
     @Override public int hashCode() { return System.identityHashCode(this); }
     @Override public String description() { return "score()"; }
-    };
+  }
+  
 }

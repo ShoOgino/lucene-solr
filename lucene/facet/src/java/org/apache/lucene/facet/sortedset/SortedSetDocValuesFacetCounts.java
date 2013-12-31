@@ -1,4 +1,4 @@
-package org.apache.lucene.facet;
+package org.apache.lucene.facet.sortedset;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -24,12 +24,18 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.lucene.facet.FacetResult;
+import org.apache.lucene.facet.Facets;
+import org.apache.lucene.facet.FacetsCollector;
 import org.apache.lucene.facet.FacetsCollector.MatchingDocs;
-import org.apache.lucene.facet.SortedSetDocValuesReaderState.OrdRange;
+import org.apache.lucene.facet.FacetsConfig;
+import org.apache.lucene.facet.LabelAndValue;
+import org.apache.lucene.facet.TopOrdAndIntQueue;
+import org.apache.lucene.facet.sortedset.SortedSetDocValuesReaderState.OrdRange;
 import org.apache.lucene.index.AtomicReader;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.MultiDocValues.MultiSortedSetDocValues;
 import org.apache.lucene.index.MultiDocValues;
+import org.apache.lucene.index.MultiDocValues.MultiSortedSetDocValues;
 import org.apache.lucene.index.ReaderUtil;
 import org.apache.lucene.index.SortedSetDocValues;
 import org.apache.lucene.util.BytesRef;

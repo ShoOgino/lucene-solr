@@ -21,11 +21,11 @@ import org.apache.lucene.util.PriorityQueue;
 
 /** Keeps highest results, first by largest int value,
  *  then tie break by smallest ord. */
-class TopOrdAndIntQueue extends PriorityQueue<TopOrdAndIntQueue.OrdAndValue> {
+public class TopOrdAndIntQueue extends PriorityQueue<TopOrdAndIntQueue.OrdAndValue> {
 
   public static final class OrdAndValue {
-    int ord;
-    int value;
+    public int ord;
+    public int value;
   }
 
   public TopOrdAndIntQueue(int topN) {

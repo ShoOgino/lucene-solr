@@ -1,4 +1,4 @@
-package org.apache.lucene.facet;
+package org.apache.lucene.facet.range;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -29,7 +29,21 @@ import org.apache.lucene.document.FloatDocValuesField;
 import org.apache.lucene.document.FloatField;
 import org.apache.lucene.document.LongField;
 import org.apache.lucene.document.NumericDocValuesField;
+import org.apache.lucene.facet.DrillDownQuery;
+import org.apache.lucene.facet.DrillSideways;
+import org.apache.lucene.facet.FacetField;
+import org.apache.lucene.facet.FacetResult;
+import org.apache.lucene.facet.FacetTestCase;
+import org.apache.lucene.facet.Facets;
+import org.apache.lucene.facet.FacetsCollector;
+import org.apache.lucene.facet.FacetsConfig;
+import org.apache.lucene.facet.LabelAndValue;
+import org.apache.lucene.facet.MultiFacets;
 import org.apache.lucene.facet.DrillSideways.DrillSidewaysResult;
+import org.apache.lucene.facet.range.DoubleRange;
+import org.apache.lucene.facet.range.DoubleRangeFacetCounts;
+import org.apache.lucene.facet.range.LongRange;
+import org.apache.lucene.facet.range.LongRangeFacetCounts;
 import org.apache.lucene.facet.taxonomy.TaxonomyReader;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyReader;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter;
@@ -89,6 +103,7 @@ public class TestRangeFacetCounts extends FacetTestCase {
     d.close();
   }
 
+  @SuppressWarnings("unused")
   public void testUselessRange() {
     try {
       new LongRange("useless", 7, true, 6, true);
@@ -748,9 +763,11 @@ public class TestRangeFacetCounts extends FacetTestCase {
     writer.forceMerge(1);
 
     ValueSource vs = new ValueSource() {
+        @SuppressWarnings("rawtypes")
         @Override
         public FunctionValues getValues(Map ignored, AtomicReaderContext ignored2) {
           return new DoubleDocValues(null) {
+            @Override
             public double doubleVal(int doc) {
               return doc+1;
             }

@@ -1,4 +1,4 @@
-package org.apache.lucene.facet;
+package org.apache.lucene.facet.taxonomy;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -19,6 +19,14 @@ package org.apache.lucene.facet;
 
 
 import org.apache.lucene.document.Document;
+import org.apache.lucene.facet.FacetTestCase;
+import org.apache.lucene.facet.Facets;
+import org.apache.lucene.facet.FacetsCollector;
+import org.apache.lucene.facet.FacetsConfig;
+import org.apache.lucene.facet.taxonomy.FloatAssociationFacetField;
+import org.apache.lucene.facet.taxonomy.IntAssociationFacetField;
+import org.apache.lucene.facet.taxonomy.TaxonomyFacetSumFloatAssociations;
+import org.apache.lucene.facet.taxonomy.TaxonomyFacetSumIntAssociations;
 import org.apache.lucene.facet.taxonomy.TaxonomyReader;
 import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyReader;

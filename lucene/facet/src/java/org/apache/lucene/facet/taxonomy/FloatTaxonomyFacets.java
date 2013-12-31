@@ -1,4 +1,4 @@
-package org.apache.lucene.facet;
+package org.apache.lucene.facet.taxonomy;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -20,20 +20,21 @@ package org.apache.lucene.facet;
 import java.io.IOException;
 import java.util.Map;
 
+import org.apache.lucene.facet.FacetResult;
+import org.apache.lucene.facet.FacetsConfig;
 import org.apache.lucene.facet.FacetsConfig.DimConfig;
-import org.apache.lucene.facet.taxonomy.FacetLabel;
-import org.apache.lucene.facet.taxonomy.TaxonomyReader;
+import org.apache.lucene.facet.LabelAndValue;
+import org.apache.lucene.facet.TopOrdAndFloatQueue;
 
 /** Base class for all taxonomy-based facets that aggregate
- *  to a per-ords int[]. */
+ *  to a per-ords float[]. */
+public abstract class FloatTaxonomyFacets extends TaxonomyFacets {
 
-public abstract class IntTaxonomyFacets extends TaxonomyFacets {
+  protected final float[] values;
 
-  protected final int[] values;
-
-  protected IntTaxonomyFacets(String indexFieldName, TaxonomyReader taxoReader, FacetsConfig config) throws IOException {
+  protected FloatTaxonomyFacets(String indexFieldName, TaxonomyReader taxoReader, FacetsConfig config) throws IOException {
     super(indexFieldName, taxoReader, config);
-    values = new int[taxoReader.getSize()];
+    values = new float[taxoReader.getSize()];
   }
   
   protected void rollup() throws IOException {
@@ -43,19 +44,16 @@ public abstract class IntTaxonomyFacets extends TaxonomyFacets {
       DimConfig ft = ent.getValue();
       if (ft.hierarchical && ft.multiValued == false) {
         int dimRootOrd = taxoReader.getOrdinal(new FacetLabel(dim));
-        // It can be -1 if this field was declared in the
-        // config but never indexed:
-        if (dimRootOrd > 0) {
-          values[dimRootOrd] += rollup(children[dimRootOrd]);
-        }
+        assert dimRootOrd > 0;
+        values[dimRootOrd] += rollup(children[dimRootOrd]);
       }
     }
   }
 
-  private int rollup(int ord) {
-    int sum = 0;
+  private float rollup(int ord) {
+    float sum = 0;
     while (ord != TaxonomyReader.INVALID_ORDINAL) {
-      int childValue = values[ord] + rollup(children[ord]);
+      float childValue = values[ord] + rollup(children[ord]);
       values[ord] = childValue;
       sum += childValue;
       ord = siblings[ord];
@@ -94,22 +92,21 @@ public abstract class IntTaxonomyFacets extends TaxonomyFacets {
       return null;
     }
 
-    TopOrdAndIntQueue q = new TopOrdAndIntQueue(Math.min(taxoReader.getSize(), topN));
-    
-    int bottomValue = 0;
+    TopOrdAndFloatQueue q = new TopOrdAndFloatQueue(Math.min(taxoReader.getSize(), topN));
+    float bottomValue = 0;
 
     int ord = children[dimOrd];
-    int totValue = 0;
+    float sumValues = 0;
     int childCount = 0;
 
-    TopOrdAndIntQueue.OrdAndValue reuse = null;
+    TopOrdAndFloatQueue.OrdAndValue reuse = null;
     while(ord != TaxonomyReader.INVALID_ORDINAL) {
       if (values[ord] > 0) {
-        totValue += values[ord];
+        sumValues += values[ord];
         childCount++;
         if (values[ord] > bottomValue) {
           if (reuse == null) {
-            reuse = new TopOrdAndIntQueue.OrdAndValue();
+            reuse = new TopOrdAndFloatQueue.OrdAndValue();
           }
           reuse.ord = ord;
           reuse.value = values[ord];
@@ -123,28 +120,28 @@ public abstract class IntTaxonomyFacets extends TaxonomyFacets {
       ord = siblings[ord];
     }
 
-    if (totValue == 0) {
+    if (sumValues == 0) {
       return null;
     }
 
     if (dimConfig.multiValued) {
       if (dimConfig.requireDimCount) {
-        totValue = values[dimOrd];
+        sumValues = values[dimOrd];
       } else {
-        // Our sum'd value is not correct, in general:
-        totValue = -1;
+        // Our sum'd count is not correct, in general:
+        sumValues = -1;
       }
     } else {
-      // Our sum'd dim value is accurate, so we keep it
+      // Our sum'd dim count is accurate, so we keep it
     }
 
     LabelAndValue[] labelValues = new LabelAndValue[q.size()];
     for(int i=labelValues.length-1;i>=0;i--) {
-      TopOrdAndIntQueue.OrdAndValue ordAndValue = q.pop();
+      TopOrdAndFloatQueue.OrdAndValue ordAndValue = q.pop();
       FacetLabel child = taxoReader.getPath(ordAndValue.ord);
       labelValues[i] = new LabelAndValue(child.components[cp.length], ordAndValue.value);
     }
 
-    return new FacetResult(dim, path, totValue, labelValues, childCount);
+    return new FacetResult(dim, path, sumValues, labelValues, childCount);
   }
 }

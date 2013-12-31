@@ -1,4 +1,4 @@
-package org.apache.lucene.facet;
+package org.apache.lucene.facet.taxonomy;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -20,35 +20,35 @@ package org.apache.lucene.facet;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.lucene.facet.FacetsCollector;
+import org.apache.lucene.facet.FacetsConfig;
 import org.apache.lucene.facet.FacetsCollector.MatchingDocs;
-import org.apache.lucene.facet.taxonomy.TaxonomyReader;
 import org.apache.lucene.index.BinaryDocValues;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.FixedBitSet;
 
-/** Computes facets counts, assuming the default encoding
- *  into DocValues was used.
+/** Aggregates sum of int values previously indexed with
+ *  {@link FloatAssociationFacetField}, assuming the default
+ *  encoding.
  *
- * @lucene.experimental */
-public class FastTaxonomyFacetCounts extends IntTaxonomyFacets {
+ *  @lucene.experimental */
+public class TaxonomyFacetSumFloatAssociations extends FloatTaxonomyFacets {
 
-  /** Create {@code FastTaxonomyFacetCounts}, which also
-   *  counts all facet labels. */
-  public FastTaxonomyFacetCounts(TaxonomyReader taxoReader, FacetsConfig config, FacetsCollector fc) throws IOException {
+  /** Create {@code TaxonomyFacetSumFloatAssociations} against
+   *  the default index field. */
+  public TaxonomyFacetSumFloatAssociations(TaxonomyReader taxoReader, FacetsConfig config, FacetsCollector fc) throws IOException {
     this(FacetsConfig.DEFAULT_INDEX_FIELD_NAME, taxoReader, config, fc);
   }
 
-  /** Create {@code FastTaxonomyFacetCounts}, using the
-   *  specified {@code indexFieldName} for ordinals.  Use
-   *  this if you had set {@link
-   *  FacetsConfig#setIndexFieldName} to change the index
-   *  field name for certain dimensions. */
-  public FastTaxonomyFacetCounts(String indexFieldName, TaxonomyReader taxoReader, FacetsConfig config, FacetsCollector fc) throws IOException {
+  /** Create {@code TaxonomyFacetSumFloatAssociations} against
+   *  the specified index field. */
+  public TaxonomyFacetSumFloatAssociations(String indexFieldName, TaxonomyReader taxoReader, FacetsConfig config, FacetsCollector fc) throws IOException {
     super(indexFieldName, taxoReader, config);
-    count(fc.getMatchingDocs());
+    sumValues(fc.getMatchingDocs());
   }
 
-  private final void count(List<MatchingDocs> matchingDocs) throws IOException {
+  private final void sumValues(List<MatchingDocs> matchingDocs) throws IOException {
+    //System.out.println("count matchingDocs=" + matchingDocs + " facetsField=" + facetsFieldName);
     for(MatchingDocs hits : matchingDocs) {
       BinaryDocValues dv = hits.context.reader().getBinaryDocValues(indexFieldName);
       if (dv == null) { // this reader does not have DocValues for the requested category list
@@ -59,22 +59,27 @@ public class FastTaxonomyFacetCounts extends IntTaxonomyFacets {
       final int length = hits.bits.length();
       int doc = 0;
       BytesRef scratch = new BytesRef();
+      //System.out.println("count seg=" + hits.context.reader());
       while (doc < length && (doc = bits.nextSetBit(doc)) != -1) {
+        //System.out.println("  doc=" + doc);
+        // TODO: use OrdinalsReader?  we'd need to add a
+        // BytesRef getAssociation()?
         dv.get(doc, scratch);
         byte[] bytes = scratch.bytes;
         int end = scratch.offset + scratch.length;
-        int ord = 0;
         int offset = scratch.offset;
-        int prev = 0;
         while (offset < end) {
-          byte b = bytes[offset++];
-          if (b >= 0) {
-            prev = ord = ((ord << 7) | b) + prev;
-            ++values[ord];
-            ord = 0;
-          } else {
-            ord = (ord << 7) | (b & 0x7F);
-          }
+          int ord = ((bytes[offset]&0xFF) << 24) |
+            ((bytes[offset+1]&0xFF) << 16) |
+            ((bytes[offset+2]&0xFF) << 8) |
+            (bytes[offset+3]&0xFF);
+          offset += 4;
+          int value = ((bytes[offset]&0xFF) << 24) |
+            ((bytes[offset+1]&0xFF) << 16) |
+            ((bytes[offset+2]&0xFF) << 8) |
+            (bytes[offset+3]&0xFF);
+          offset += 4;
+          values[ord] += Float.intBitsToFloat(value);
         }
         ++doc;
       }

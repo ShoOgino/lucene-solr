@@ -1,4 +1,4 @@
-package org.apache.lucene.facet;
+package org.apache.lucene.facet.taxonomy;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -25,13 +25,19 @@ import java.util.Map;
 
 import org.apache.lucene.analysis.MockAnalyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.DoubleDocValuesField;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FloatDocValuesField;
 import org.apache.lucene.document.IntField;
 import org.apache.lucene.document.NumericDocValuesField;
 import org.apache.lucene.document.StringField;
-import org.apache.lucene.facet.taxonomy.TaxonomyReader;
+import org.apache.lucene.facet.DocValuesOrdinalsReader;
+import org.apache.lucene.facet.FacetField;
+import org.apache.lucene.facet.FacetResult;
+import org.apache.lucene.facet.FacetTestCase;
+import org.apache.lucene.facet.Facets;
+import org.apache.lucene.facet.FacetsCollector;
+import org.apache.lucene.facet.FacetsConfig;
+import org.apache.lucene.facet.LabelAndValue;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyReader;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter;
 import org.apache.lucene.index.AtomicReaderContext;
@@ -44,7 +50,6 @@ import org.apache.lucene.queries.function.FunctionQuery;
 import org.apache.lucene.queries.function.FunctionValues;
 import org.apache.lucene.queries.function.ValueSource;
 import org.apache.lucene.queries.function.docvalues.DoubleDocValues;
-import org.apache.lucene.queries.function.valuesource.DoubleFieldSource;
 import org.apache.lucene.queries.function.valuesource.FloatFieldSource;
 import org.apache.lucene.queries.function.valuesource.IntFieldSource;
 import org.apache.lucene.queries.function.valuesource.LongFieldSource;
@@ -55,7 +60,6 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Scorer;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.util.IOUtils;
 import org.apache.lucene.util._TestUtil;
@@ -345,7 +349,6 @@ public class TestTaxonomyFacetSumValueSource extends FacetTestCase {
     };
     
     FacetsCollector fc = new FacetsCollector(true);
-    TopScoreDocCollector tsdc = TopScoreDocCollector.create(10, true);
     // score documents by their 'price' field - makes asserting the correct counts for the categories easier
     Query q = new FunctionQuery(new LongFieldSource("price"));
     FacetsCollector.search(newSearcher(r), q, 10, fc);
@@ -407,13 +410,12 @@ public class TestTaxonomyFacetSumValueSource extends FacetTestCase {
     DirectoryTaxonomyReader taxoReader = new DirectoryTaxonomyReader(taxoWriter);
     
     FacetsCollector fc = new FacetsCollector(true);
-    TopDocs hits = FacetsCollector.search(newSearcher(r), new MatchAllDocsQuery(), 10, fc);
+    FacetsCollector.search(newSearcher(r), new MatchAllDocsQuery(), 10, fc);
     
     Facets facets1 = getTaxonomyFacetCounts(taxoReader, config, fc);
     Facets facets2 = new TaxonomyFacetSumValueSource(new DocValuesOrdinalsReader("$b"), taxoReader, config, fc, new TaxonomyFacetSumValueSource.ScoreValueSource());
 
     assertEquals(r.maxDoc(), facets1.getTopChildren(10, "a").value.intValue());
-    double expected = hits.getMaxScore() * r.numDocs();
     assertEquals(r.maxDoc(), facets2.getTopChildren(10, "b").value.doubleValue(), 1E-10);
     IOUtils.close(taxoWriter, iw, taxoReader, taxoDir, r, indexDir);
   }
@@ -457,7 +459,7 @@ public class TestTaxonomyFacetSumValueSource extends FacetTestCase {
         System.out.println("\nTEST: iter content=" + searchToken);
       }
       FacetsCollector fc = new FacetsCollector();
-      TopDocs hits = FacetsCollector.search(searcher, new TermQuery(new Term("content", searchToken)), 10, fc);
+      FacetsCollector.search(searcher, new TermQuery(new Term("content", searchToken)), 10, fc);
       Facets facets = new TaxonomyFacetSumValueSource(tr, config, fc, values);
 
       // Slow, yet hopefully bug-free, faceting:

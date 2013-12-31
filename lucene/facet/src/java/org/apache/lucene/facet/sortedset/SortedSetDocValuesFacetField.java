@@ -1,4 +1,4 @@
-package org.apache.lucene.facet;
+package org.apache.lucene.facet.sortedset;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -17,20 +17,31 @@ package org.apache.lucene.facet;
  * limitations under the License.
  */
 
-/** Base class for a single labeled range.
- *
- *  @lucene.experimental */
-public abstract class Range {
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.FieldType;
+
+/** Add an instance of this to your Document for every facet
+ *  label to be indexed via SortedSetDocValues. */
+public class SortedSetDocValuesFacetField extends Field {
+  
+  /** Indexed {@link FieldType}. */
+  public static final FieldType TYPE = new FieldType();
+  static {
+    TYPE.setIndexed(true);
+    TYPE.freeze();
+  }
+  
+  public final String dim;
   public final String label;
 
-  protected Range(String label) {
-    if (label == null) {
-      throw new NullPointerException("label cannot be null");
-    }
+  public SortedSetDocValuesFacetField(String dim, String label) {
+    super("dummy", TYPE);
+    this.dim = dim;
     this.label = label;
   }
 
-  protected void failNoMatch() {
-    throw new IllegalArgumentException("range \"" + label + "\" matches nothing");
+  @Override
+  public String toString() {
+    return "SortedSetDocValuesFacetField(dim=" + dim + " label=" + label + ")";
   }
 }

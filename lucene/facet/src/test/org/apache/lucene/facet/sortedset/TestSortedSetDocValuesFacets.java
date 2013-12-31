@@ -1,4 +1,4 @@
-package org.apache.lucene.facet;
+package org.apache.lucene.facet.sortedset;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -24,6 +24,13 @@ import java.util.Map;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.facet.DrillDownQuery;
+import org.apache.lucene.facet.FacetResult;
+import org.apache.lucene.facet.FacetTestCase;
+import org.apache.lucene.facet.Facets;
+import org.apache.lucene.facet.FacetsCollector;
+import org.apache.lucene.facet.FacetsConfig;
+import org.apache.lucene.facet.LabelAndValue;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.RandomIndexWriter;
 import org.apache.lucene.index.SlowCompositeReaderWrapper;
@@ -89,6 +96,7 @@ public class TestSortedSetDocValuesFacets extends FacetTestCase {
   }
 
   // LUCENE-5090
+  @SuppressWarnings("unused")
   public void testStaleState() throws Exception {
     assumeTrue("Test requires SortedSetDV support", defaultCodecSupportsSortedSet());
     Directory dir = newDirectory();
@@ -296,7 +304,7 @@ public class TestSortedSetDocValuesFacets extends FacetTestCase {
         System.out.println("\nTEST: iter content=" + searchToken);
       }
       FacetsCollector fc = new FacetsCollector();
-      TopDocs hits = FacetsCollector.search(searcher, new TermQuery(new Term("content", searchToken)), 10, fc);
+      FacetsCollector.search(searcher, new TermQuery(new Term("content", searchToken)), 10, fc);
       Facets facets = new SortedSetDocValuesFacetCounts(state, fc);
 
       // Slow, yet hopefully bug-free, faceting:

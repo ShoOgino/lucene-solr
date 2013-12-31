@@ -1,4 +1,4 @@
-package org.apache.lucene.facet;
+package org.apache.lucene.facet.taxonomy;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -22,6 +22,7 @@ import java.util.Arrays;
 import org.apache.lucene.document.Document; // javadocs
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
+import org.apache.lucene.facet.Facets;
 import org.apache.lucene.util.BytesRef;
 
 /** Add an instance of this to your {@link Document} to add
@@ -35,14 +36,16 @@ import org.apache.lucene.util.BytesRef;
  *  @lucene.experimental */
 public class AssociationFacetField extends Field {
   
-  static final FieldType TYPE = new FieldType();
+  /** Indexed {@link FieldType}. */
+  public static final FieldType TYPE = new FieldType();
   static {
     TYPE.setIndexed(true);
     TYPE.freeze();
   }
-  protected final String dim;
-  protected final String[] path;
-  protected final BytesRef assoc;
+  
+  public final String dim;
+  public final String[] path;
+  public final BytesRef assoc;
 
   /** Creates this from {@code dim} and {@code path} and an
    *  association */
@@ -55,16 +58,6 @@ public class AssociationFacetField extends Field {
     }
     this.path = path;
   }
-
-//  private static BytesRef intToBytesRef(int v) {
-//    byte[] bytes = new byte[4];
-//    // big-endian:
-//    bytes[0] = (byte) (v >> 24);
-//    bytes[1] = (byte) (v >> 16);
-//    bytes[2] = (byte) (v >> 8);
-//    bytes[3] = (byte) v;
-//    return new BytesRef(bytes);
-//  }
 
   @Override
   public String toString() {

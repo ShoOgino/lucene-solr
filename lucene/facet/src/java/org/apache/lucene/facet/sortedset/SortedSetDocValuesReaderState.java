@@ -1,4 +1,4 @@
-package org.apache.lucene.facet;
+package org.apache.lucene.facet.sortedset;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.lucene.facet.FacetsConfig;
 import org.apache.lucene.index.AtomicReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.SlowCompositeReaderWrapper;

@@ -1,4 +1,4 @@
-package org.apache.lucene.facet;
+package org.apache.lucene.facet.taxonomy;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -30,9 +30,17 @@ import org.apache.lucene.analysis.MockAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
-import org.apache.lucene.facet.taxonomy.PrintTaxonomyStats;
-import org.apache.lucene.facet.taxonomy.TaxonomyReader;
-import org.apache.lucene.facet.taxonomy.TaxonomyWriter;
+import org.apache.lucene.facet.CachedOrdinalsReader;
+import org.apache.lucene.facet.DocValuesOrdinalsReader;
+import org.apache.lucene.facet.DrillDownQuery;
+import org.apache.lucene.facet.FacetField;
+import org.apache.lucene.facet.FacetResult;
+import org.apache.lucene.facet.FacetTestCase;
+import org.apache.lucene.facet.Facets;
+import org.apache.lucene.facet.FacetsCollector;
+import org.apache.lucene.facet.FacetsConfig;
+import org.apache.lucene.facet.LabelAndValue;
+import org.apache.lucene.facet.OrdinalsReader;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyReader;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter;
 import org.apache.lucene.index.DirectoryReader;
@@ -45,7 +53,6 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.similarities.DefaultSimilarity;
 import org.apache.lucene.search.similarities.PerFieldSimilarityWrapper;
 import org.apache.lucene.search.similarities.Similarity;
@@ -700,7 +707,7 @@ public class TestTaxonomyFacetCounts extends FacetTestCase {
         System.out.println("\nTEST: iter content=" + searchToken);
       }
       FacetsCollector fc = new FacetsCollector();
-      TopDocs hits = FacetsCollector.search(searcher, new TermQuery(new Term("content", searchToken)), 10, fc);
+      FacetsCollector.search(searcher, new TermQuery(new Term("content", searchToken)), 10, fc);
       Facets facets = getTaxonomyFacetCounts(tr, config, fc);
 
       // Slow, yet hopefully bug-free, faceting:

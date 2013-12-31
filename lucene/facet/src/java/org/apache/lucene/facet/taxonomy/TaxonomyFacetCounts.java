@@ -1,4 +1,4 @@
-package org.apache.lucene.facet;
+package org.apache.lucene.facet.taxonomy;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -20,8 +20,10 @@ package org.apache.lucene.facet;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.lucene.facet.FacetsCollector;
 import org.apache.lucene.facet.FacetsCollector.MatchingDocs;
-import org.apache.lucene.facet.taxonomy.TaxonomyReader;
+import org.apache.lucene.facet.FacetsConfig;
+import org.apache.lucene.facet.OrdinalsReader;
 import org.apache.lucene.index.BinaryDocValues;
 import org.apache.lucene.util.FixedBitSet;
 import org.apache.lucene.util.IntsRef;
