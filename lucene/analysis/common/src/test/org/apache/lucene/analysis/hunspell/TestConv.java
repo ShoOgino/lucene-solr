@@ -1,4 +1,6 @@
-package org.apache.solr.store.blockcache;
+package org.apache.lucene.analysis.hunspell;
+
+import org.junit.BeforeClass;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -17,13 +19,18 @@ package org.apache.solr.store.blockcache;
  * limitations under the License.
  */
 
-/**
- * @lucene.experimental
- */
-public interface Store {
-
-  byte[] takeBuffer(int bufferSize);
-
-  void putBuffer(byte[] buffer);
-
+public class TestConv extends StemmerTestBase {
+  
+  @BeforeClass
+  public static void beforeClass() throws Exception {
+    init("conv.aff", "conv.dic");
+  }
+  
+  public void testConversion() {
+    assertStemsTo("drink", "drInk");
+    assertStemsTo("drInk", "drInk");
+    assertStemsTo("drInkAble", "drInk");
+    assertStemsTo("drInkABle", "drInk");
+    assertStemsTo("drinkABle", "drInk");
+  }
 }
