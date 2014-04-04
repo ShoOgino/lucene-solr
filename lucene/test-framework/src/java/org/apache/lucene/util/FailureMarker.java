@@ -1,4 +1,9 @@
-package org.apache.lucene.codecs.sep;
+package org.apache.lucene.util;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.junit.runner.notification.Failure;
+import org.junit.runner.notification.RunListener;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -17,20 +22,27 @@ package org.apache.lucene.codecs.sep;
  * limitations under the License.
  */
 
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.IOContext;
+/**
+ * A {@link RunListener} that detects suite/ test failures. We need it because failures
+ * due to thread leaks happen outside of any rule contexts.
+ */
+public class FailureMarker extends RunListener {
+  static final AtomicInteger failures = new AtomicInteger();
 
-import java.io.IOException;
+  @Override
+  public void testFailure(Failure failure) throws Exception {
+    failures.incrementAndGet();
+  }
 
-/** Provides int reader and writer to specified files.
- *
- * @lucene.experimental */
-public abstract class IntStreamFactory {
-  /** Create an {@link IntIndexInput} on the provided
-   *  fileName. */
-  public abstract IntIndexInput openInput(Directory dir, String fileName, IOContext context) throws IOException;
+  public static boolean hadFailures() {
+    return failures.get() > 0;
+  }
 
-  /** Create an {@link IntIndexOutput} on the provided
-   *  fileName. */
-  public abstract IntIndexOutput createOutput(Directory dir, String fileName, IOContext context) throws IOException;
+  static int getFailures() {
+    return failures.get();
+  }
+
+  public static void resetFailures() {
+    failures.set(0);
+  }
 }

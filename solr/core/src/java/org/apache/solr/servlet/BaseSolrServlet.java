@@ -1,5 +1,3 @@
-package org.apache.lucene.codecs.sep;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -17,20 +15,21 @@ package org.apache.lucene.codecs.sep;
  * limitations under the License.
  */
 
-import org.apache.lucene.codecs.Codec;
-import org.apache.lucene.codecs.mocksep.MockSepPostingsFormat;
-import org.apache.lucene.index.BasePostingsFormatTestCase;
-import org.apache.lucene.util.TestUtil;
+package org.apache.solr.servlet;
+
+import javax.servlet.http.HttpServlet;
 
 /**
- * Tests sep layout
+ * All Solr servlets available to the user's webapp should
+ * extend this class and not {@link HttpServlet}.
+ * This class ensures that the logging configuration is correct
+ * before any Solr specific code is executed.
  */
-public class TestSepPostingsFormat extends BasePostingsFormatTestCase {
-  // TODO: randomize cutoff
-  private final Codec codec = TestUtil.alwaysPostingsFormat(new MockSepPostingsFormat());
-
-  @Override
-  protected Codec getCodec() {
-    return codec;
+@SuppressWarnings("serial")
+abstract class BaseSolrServlet extends HttpServlet {
+  
+  static {
+    CheckLoggingConfiguration.check();
   }
+  
 }
