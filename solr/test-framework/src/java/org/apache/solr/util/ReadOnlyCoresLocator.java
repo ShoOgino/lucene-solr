@@ -17,32 +17,35 @@ package org.apache.solr.util;
  * limitations under the License.
  */
 
-import org.apache.solr.core.ConfigSolr;
+import org.apache.solr.core.CoreContainer;
+import org.apache.solr.core.CoreDescriptor;
 import org.apache.solr.core.CoresLocator;
-import org.apache.solr.core.PluginInfo;
 
-/**
- *
- */
-public class MockConfigSolr extends ConfigSolr {
+public abstract class ReadOnlyCoresLocator implements CoresLocator {
 
-  public MockConfigSolr() {
-    super(null, null);
+  @Override
+  public void create(CoreContainer cc, CoreDescriptor... coreDescriptors) {
+    // no-op
   }
 
   @Override
-  public CoresLocator getCoresLocator() {
-    return null;
+  public void persist(CoreContainer cc, CoreDescriptor... coreDescriptors) {
+    // no-op
   }
 
   @Override
-  public PluginInfo getShardHandlerFactoryPluginInfo() {
-    return null;
+  public void delete(CoreContainer cc, CoreDescriptor... coreDescriptors) {
+    // no-op
   }
 
   @Override
-  protected String getProperty(CfgProp key) {
-    return null;
+  public void rename(CoreContainer cc, CoreDescriptor oldCD, CoreDescriptor newCD) {
+    // no-op
+  }
+
+  @Override
+  public void swap(CoreContainer cc, CoreDescriptor cd1, CoreDescriptor cd2) {
+    // no-op
   }
 
 }
