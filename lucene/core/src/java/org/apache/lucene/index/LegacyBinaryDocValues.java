@@ -14,10 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.solr.cloud.rule;
+package org.apache.lucene.index;
 
-import java.util.Map;
 
-public interface RemoteCallback {
-  void remoteCallback(SnitchContext ctx, Map<String, Object> returnedVal);
+import org.apache.lucene.util.BytesRef;
+
+/**
+ * A per-document byte[]
+ *
+ * @deprecated Use {@link BinaryDocValues} instead.
+ */
+@Deprecated
+public abstract class LegacyBinaryDocValues {
+  
+  /** Sole constructor. (For invocation by subclass 
+   * constructors, typically implicit.) */
+  protected LegacyBinaryDocValues() {}
+
+  /** Lookup the value for document.  The returned {@link BytesRef} may be
+   * re-used across calls to {@link #get(int)} so make sure to
+   * {@link BytesRef#deepCopyOf(BytesRef) copy it} if you want to keep it
+   * around. */
+  public abstract BytesRef get(int docID);
 }
