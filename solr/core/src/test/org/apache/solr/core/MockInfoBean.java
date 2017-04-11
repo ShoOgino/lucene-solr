@@ -14,53 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.solr.highlight;
+package org.apache.solr.core;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
-import org.apache.solr.common.params.SolrParams;
-import org.apache.solr.common.util.NamedList;
-import org.apache.solr.core.SolrInfoBean;
+import org.apache.solr.metrics.MetricsMap;
 import org.apache.solr.metrics.SolrMetricManager;
 import org.apache.solr.metrics.SolrMetricProducer;
 
-/**
- * 
- * @since solr 1.3
- */
-public abstract class HighlightingPluginBase implements SolrInfoBean, SolrMetricProducer
-{
-  protected Counter numRequests;
-  protected SolrParams defaults;
-  protected Set<String> metricNames = new HashSet<>(1);
-  protected MetricRegistry registry;
-
-  public void init(NamedList args) {
-    if( args != null ) {
-      Object o = args.get("defaults");
-      if (o != null && o instanceof NamedList ) {
-        defaults = SolrParams.toSolrParams((NamedList)o);
-      }
-    }
-  }
-
-  //////////////////////// SolrInfoMBeans methods //////////////////////
+class MockInfoBean implements SolrInfoBean, SolrMetricProducer {
+  Set<String> metricNames = new HashSet<>();
+  MetricRegistry registry;
 
   @Override
   public String getName() {
-    return this.getClass().getName();
+    return "mock";
   }
 
   @Override
-  public abstract String getDescription();
+  public Category getCategory() {
+    return Category.OTHER;
+  }
 
   @Override
-  public Category getCategory()
-  {
-    return Category.HIGHLIGHTER;
+  public String getDescription() {
+    return "mock";
   }
 
   @Override
@@ -76,8 +56,16 @@ public abstract class HighlightingPluginBase implements SolrInfoBean, SolrMetric
   @Override
   public void initializeMetrics(SolrMetricManager manager, String registryName, String scope) {
     registry = manager.registry(registryName);
-    numRequests = manager.counter(this, registryName, "requests", getCategory().toString(), scope);
+    MetricsMap metricsMap = new MetricsMap((detailed, map) -> {
+      map.put("Integer", 123);
+      map.put("Double",567.534);
+      map.put("Long", 32352463l);
+      map.put("Short", (short) 32768);
+      map.put("Byte", (byte) 254);
+      map.put("Float", 3.456f);
+      map.put("String","testing");
+      map.put("Object", new Object());
+    });
+    manager.registerGauge(this, registryName, metricsMap, true, getClass().getSimpleName(), getCategory().toString(), scope);
   }
 }
-
-
