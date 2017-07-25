@@ -14,22 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.solr.rest.schema;
-import org.apache.solr.rest.SolrRestletTestBase;
-import org.junit.Test;
+package org.apache.solr.schema;
 
-public class TestSchemaSimilarityResource extends SolrRestletTestBase {
+import org.apache.lucene.search.SortField;
 
-  /**
-   * NOTE: schema used by parent class doesn't define a global sim, so we get the implicit default
-   * which causes the FQN of the class to be returned
-   * 
-   */
-  @Test
-  public void testGetSchemaSimilarity() throws Exception {
-    assertQ("/schema/similarity?wt=xml",
-            "count(/response/lst[@name='similarity']) = 1",
-            "/response/lst[@name='similarity']/str[@name='class'][.='org.apache.solr.search.similarities.SchemaSimilarityFactory']");
+/**
+ * Custom field wrapping an int, to test sorting via a custom comparator.
+ */
+public class WrappedTrieIntField extends TrieIntField {
+  @Override
+  public SortField getSortField(final SchemaField field, final boolean reverse) {
+    return WrappedIntPointField.getSortField(super.getSortField(field, reverse), field);
   }
 }
-
