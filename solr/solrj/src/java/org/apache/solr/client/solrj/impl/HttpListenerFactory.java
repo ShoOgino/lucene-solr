@@ -14,31 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.solr.client.solrj.impl;
 
-import java.io.Closeable;
-import java.util.Optional;
+import org.eclipse.jetty.client.api.Request;
+import org.eclipse.jetty.client.api.Response;
+import org.eclipse.jetty.client.api.Result;
 
-/**
- * Factory interface for configuring {@linkplain SolrHttpClientBuilder}. This
- * relies on the internal HttpClient implementation and is subject to
- * change.
- *
- * @lucene.experimental
- **/
-public interface HttpClientBuilderFactory extends Closeable {
+public interface HttpListenerFactory {
+  abstract class RequestResponseListener implements Request.BeginListener, Response.CompleteListener, Request.QueuedListener {
+    @Override
+    public void onBegin(Request request){}
 
-  /**
-   * This method configures the {@linkplain SolrHttpClientBuilder} by overriding the
-   * configuration of passed SolrHttpClientBuilder or as a new instance.
-   *
-   * @param builder The instance of the {@linkplain SolrHttpClientBuilder} which should
-   *                by configured (optional).
-   * @return the {@linkplain SolrHttpClientBuilder}
-   */
-  public SolrHttpClientBuilder getHttpClientBuilder(Optional<SolrHttpClientBuilder> builder);
+    @Override
+    public void onQueued(Request request) {}
 
-  public default void setup(Http2SolrClient client) {
-
+    @Override
+    public void onComplete(Result result) {}
   }
+
+  RequestResponseListener get();
 }
+

@@ -21,21 +21,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import org.apache.lucene.util.LuceneTestCase;
 import org.apache.solr.SolrJettyTestBase;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.embedded.JettyConfig;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.hamcrest.core.StringContains.containsString;
 
-/**
- * Tests {@link HttpSolrClient}'s response to a variety of bad inputs.
- */
-public class HttpSolrClientBadInputTest extends SolrJettyTestBase {
+import static org.junit.internal.matchers.StringContains.containsString;
+
+public class ConcurrentUpdateHttp2SolrClientBadInputTest extends SolrJettyTestBase {
   private static final List<String> NULL_STR_LIST = null;
   private static final List<String> EMPTY_STR_LIST = new ArrayList<>();
   private static final String ANY_COLLECTION = "ANY_COLLECTION";
   private static final int ANY_COMMIT_WITHIN_TIME = -1;
+  private static final int ANY_QUEUE_SIZE = 1;
+  private static final int ANY_MAX_NUM_THREADS = 1;
 
   @BeforeClass
   public static void beforeTest() throws Exception {
@@ -45,19 +46,14 @@ public class HttpSolrClientBadInputTest extends SolrJettyTestBase {
     createAndStartJetty(legacyExampleCollection1SolrHome(), jettyConfig);
   }
 
-  private void assertExceptionThrownWithMessageContaining(Class expectedType, List<String> expectedStrings, ThrowingRunnable runnable) {
-    Throwable thrown = expectThrows(expectedType, runnable);
-
-    if (expectedStrings != null) {
-      for (String expectedString : expectedStrings) {
-        assertThat(thrown.getMessage(), containsString(expectedString));
-      }
-    }
-  }
-
   @Test
   public void testDeleteByIdReportsInvalidIdLists() throws Exception {
-    try (SolrClient client = getHttpSolrClient(jetty.getBaseUrl().toString() + "/" + ANY_COLLECTION)) {
+
+    try (Http2SolrClient http2Client = new Http2SolrClient.Builder().build();
+         SolrClient client = new ConcurrentUpdateHttp2SolrClient.Builder(jetty.getBaseUrl().toString() + "/" + ANY_COLLECTION, http2Client)
+             .withQueueSize(ANY_QUEUE_SIZE)
+             .withThreadCount(ANY_MAX_NUM_THREADS)
+             .build()) {
       assertExceptionThrownWithMessageContaining(IllegalArgumentException.class, Lists.newArrayList("ids", "null"), () -> {
         client.deleteById(NULL_STR_LIST);
       });
@@ -72,7 +68,11 @@ public class HttpSolrClientBadInputTest extends SolrJettyTestBase {
       });
     }
 
-    try (SolrClient client = getHttpSolrClient(jetty.getBaseUrl().toString())) {
+    try (Http2SolrClient http2Client = new Http2SolrClient.Builder().build();
+         SolrClient client = new ConcurrentUpdateHttp2SolrClient.Builder(jetty.getBaseUrl().toString() + "/" + ANY_COLLECTION, http2Client)
+             .withQueueSize(ANY_QUEUE_SIZE)
+             .withThreadCount(ANY_MAX_NUM_THREADS)
+             .build()) {
       assertExceptionThrownWithMessageContaining(IllegalArgumentException.class, Lists.newArrayList("ids", "null"), () -> {
         client.deleteById(ANY_COLLECTION, NULL_STR_LIST);
       });
@@ -88,6 +88,13 @@ public class HttpSolrClientBadInputTest extends SolrJettyTestBase {
     }
   }
 
+  private void assertExceptionThrownWithMessageContaining(Class expectedType, List<String> expectedStrings, LuceneTestCase.ThrowingRunnable runnable) {
+    Throwable thrown = expectThrows(expectedType, runnable);
 
-
+    if (expectedStrings != null) {
+      for (String expectedString : expectedStrings) {
+        assertThat(thrown.getMessage(), containsString(expectedString));
+      }
+    }
+  }
 }
