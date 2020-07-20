@@ -14,12 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.solr.client.solrj.cloud;
 
-package org.apache.solr.client.solrj.cloud.autoscaling;
+/**
+ *
+ */
+public class AlreadyExistsException extends Exception {
 
-public class TestPolicyOld extends TestPolicy {
-  public TestPolicyOld(){
-    super();
-    useNodeset = false;
+  private final String id;
+
+  public AlreadyExistsException(String id) {
+    super("Already exists: " + id);
+    this.id = id;
   }
+
+  public String getId() {
+    return id;
+  }
+
 }

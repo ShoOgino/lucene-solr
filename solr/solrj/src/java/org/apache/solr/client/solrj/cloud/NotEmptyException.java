@@ -14,16 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.apache.solr.client.solrj.cloud.autoscaling;
-
-import java.util.function.Function;
+package org.apache.solr.client.solrj.cloud;
 
 /**
- * This clause is an instance with no conditions with computed value. every value is computed just in time
+ *
  */
-public class SealedClause extends Clause {
-  SealedClause(Clause clause, Function<Condition, Object> computedValueEvaluator) {
-    super(clause, computedValueEvaluator);
+public class NotEmptyException extends Exception {
+
+  private final String path;
+
+  public NotEmptyException(String path) {
+    super("Path not empty: " + path);
+    this.path = path;
   }
+
+  public String getPath() {
+    return path;
+  }
+
 }
