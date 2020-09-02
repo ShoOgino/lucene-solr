@@ -14,10 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.lucene.codecs;
 
-/** Remove this file when adding back compat codecs */
-public class Placeholder {
-  // no instance
-  private Placeholder() {}
-}
+/** Advanced spatial utilities. */
+package org.apache.lucene.spatial.util;
